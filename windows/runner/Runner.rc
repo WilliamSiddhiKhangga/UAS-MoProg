@@ -90,12 +90,12 @@ BEGIN
         BLOCK "040904e4"
         BEGIN
             VALUE "CompanyName", "com.example" "\0"
-            VALUE "FileDescription", "travoy" "\0"
+            VALUE "FileDescription", "tugasuas" "\0"
             VALUE "FileVersion", VERSION_AS_STRING "\0"
-            VALUE "InternalName", "travoy" "\0"
+            VALUE "InternalName", "tugasuas" "\0"
             VALUE "LegalCopyright", "Copyright (C) 2024 com.example. All rights reserved." "\0"
-            VALUE "OriginalFilename", "travoy.exe" "\0"
-            VALUE "ProductName", "travoy" "\0"
+            VALUE "OriginalFilename", "tugasuas.exe" "\0"
+            VALUE "ProductName", "tugasuas" "\0"
             VALUE "ProductVersion", VERSION_AS_STRING "\0"
         END
     END
