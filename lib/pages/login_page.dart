@@ -1,10 +1,32 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
 
 import 'package:flutter/material.dart';
+import 'package:tugasuas/auth/auth_service.dart';
 import 'package:tugasuas/pages/navpages/main_page.dart';
 
 class SignIn extends StatelessWidget {
-  const SignIn({super.key});
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+
+  SignIn({super.key});
+
+  void login(BuildContext context) async {
+    // auth
+    final auth = AuthService();
+
+    // try login
+    try {
+      await auth.signInWithEmailAndPassword(
+          _emailController.text, _passwordController.text);
+    } catch (e) {
+      showDialog(
+        context: context,
+        builder: ((context) => AlertDialog(
+              title: Text(e.toString()),
+            )),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -43,8 +65,17 @@ class SignIn extends StatelessWidget {
               SizedBox(
                 height: size.height * 0.04,
               ),
-              inputField("Username", Colors.white),
-              inputField("Password", Colors.black26),
+              inputField(
+                "Username",
+                Colors.white,
+                _emailController,
+              ),
+              inputField(
+                "Password",
+                Colors.black26,
+                _passwordController,
+                isPassword: true,
+              ),
               SizedBox(
                 height: 10,
               ),
@@ -67,12 +98,13 @@ class SignIn extends StatelessWidget {
                 padding: EdgeInsets.symmetric(horizontal: 25),
                 child: GestureDetector(
                   onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => MainPage(),
-                      ),
-                    );
+                    // Navigator.push(
+                    //   context,
+                    //   MaterialPageRoute(
+                    //     builder: (context) => MainPage(),
+                    //   ),
+                    // );
+                    login(context);
                   },
                   child: Container(
                     width: size.width,
@@ -181,13 +213,17 @@ class SignIn extends StatelessWidget {
     );
   }
 
-  Container inputField(String hint, Color color) {
+  Container inputField(
+      String hint, Color color, TextEditingController controller,
+      {bool isPassword = false}) {
     return Container(
       padding: EdgeInsets.symmetric(
         horizontal: 25,
         vertical: 10,
       ),
       child: TextField(
+        controller: controller,
+        obscureText: isPassword,
         decoration: InputDecoration(
           contentPadding: EdgeInsets.symmetric(
             horizontal: 20,
@@ -206,7 +242,7 @@ class SignIn extends StatelessWidget {
           ),
           suffixIcon: Icon(
             Icons.visibility_off_outlined,
-            color: color,
+            color: isPassword ? Colors.black26 : Colors.black26,
           ),
         ),
       ),

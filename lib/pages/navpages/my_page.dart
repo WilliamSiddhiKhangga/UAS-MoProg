@@ -1,15 +1,26 @@
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:tugasuas/auth/auth_service.dart';
 
 class MyPage extends StatelessWidget {
   const MyPage({super.key});
 
+  void logOut() {
+    // get auth service
+    final auth = AuthService();
+
+    auth.signOut();
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: Center(
-        child: Text(
-          "My Page",
-        ),
+    return Scaffold(
+      appBar: AppBar(
+        actions: [
+          IconButton(
+            onPressed: logOut,
+            icon: const Icon(Icons.logout),
+          )
+        ],
       ),
     );
   }
