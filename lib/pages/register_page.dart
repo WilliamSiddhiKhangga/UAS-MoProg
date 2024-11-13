@@ -3,27 +3,46 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:tugasuas/auth/auth_service.dart';
-import 'package:tugasuas/pages/register_page.dart';
+import 'package:tugasuas/pages/login_page.dart';
+import 'package:tugasuas/pages/navpages/main_page.dart';
 
-class SignIn extends StatelessWidget {
+class RegisterPage extends StatelessWidget {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _confirmPasswordController =
+      TextEditingController();
 
-  SignIn({super.key});
+  RegisterPage({super.key});
 
-  void login(BuildContext context) async {
-    // auth
+  void register(BuildContext context) async {
+    // auth service
     final auth = AuthService();
 
-    // try login
-    try {
-      await auth.signInWithEmailAndPassword(
-          _emailController.text, _passwordController.text);
-    } catch (e) {
+    if (_passwordController.text == _confirmPasswordController.text) {
+      try {
+        await auth.signUpWithEmailAndPassword(
+            _emailController.text, _passwordController.text);
+
+        // navigasi ke halaman utama jika berhasil register
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => MainPage(),
+          ),
+        );
+      } catch (e) {
+        showDialog(
+          context: context,
+          builder: ((context) => AlertDialog(
+                title: Text(e.toString()),
+              )),
+        );
+      }
+    } else {
       showDialog(
         context: context,
-        builder: ((context) => AlertDialog(
-              title: Text(e.toString()),
+        builder: ((context) => const AlertDialog(
+              title: Text("Password don't match"),
             )),
       );
     }
@@ -42,7 +61,7 @@ class SignIn extends StatelessWidget {
                 height: size.height * 0.03,
               ),
               Text(
-                "Hello Again",
+                "Welcome to Travoy",
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
@@ -51,23 +70,10 @@ class SignIn extends StatelessWidget {
                 ),
               ),
               SizedBox(
-                height: 15,
-              ),
-              Text(
-                "Welcome back you've\nbeen missed",
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 25,
-                  color: Colors.black38,
-                  height: 1.2,
-                ),
-              ),
-              SizedBox(
                 height: size.height * 0.04,
               ),
               inputField(
-                "Username",
+                "email",
                 Colors.white,
                 _emailController,
               ),
@@ -77,20 +83,11 @@ class SignIn extends StatelessWidget {
                 _passwordController,
                 isPassword: true,
               ),
-              SizedBox(
-                height: 10,
-              ),
-              Align(
-                alignment: Alignment.centerRight,
-                child: Text(
-                  "Change Password            ",
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 16,
-                    color: Colors.black45,
-                  ),
-                ),
+              inputField(
+                "Confirm Password",
+                Colors.black26,
+                _confirmPasswordController,
+                isPassword: true,
               ),
               SizedBox(
                 height: size.height * 0.04,
@@ -99,13 +96,7 @@ class SignIn extends StatelessWidget {
                 padding: EdgeInsets.symmetric(horizontal: 25),
                 child: GestureDetector(
                   onTap: () {
-                    // Navigator.push(
-                    //   context,
-                    //   MaterialPageRoute(
-                    //     builder: (context) => MainPage(),
-                    //   ),
-                    // );
-                    login(context);
+                    register(context);
                   },
                   child: Container(
                     width: size.width,
@@ -116,7 +107,7 @@ class SignIn extends StatelessWidget {
                     ),
                     child: Center(
                       child: Text(
-                        "Sign In",
+                        "Register",
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
                           color: Colors.white,
@@ -167,18 +158,9 @@ class SignIn extends StatelessWidget {
                 height: size.height * 0.06,
               ),
               Center(
-                // child: GestureDetector(
-                //   onTap: () {
-                //     Navigator.push(
-                //       context,
-                //       MaterialPageRoute(
-                //         builder: (context) => RegisterPage(),
-                //       ),
-                //     );
-                //   },
                 child: Text.rich(
                   TextSpan(
-                    text: "Doesn't Have Account? ",
+                    text: "Already Have Account? ",
                     style: TextStyle(
                       color: Colors.black26,
                       fontWeight: FontWeight.bold,
@@ -186,7 +168,7 @@ class SignIn extends StatelessWidget {
                     ),
                     children: [
                       TextSpan(
-                        text: "Register Now",
+                        text: "Login Now",
                         style: TextStyle(
                           color: Colors.blueAccent,
                           fontWeight: FontWeight.bold,
@@ -196,7 +178,7 @@ class SignIn extends StatelessWidget {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) => RegisterPage(),
+                                builder: (context) => SignIn(),
                               ),
                             );
                           },
@@ -205,7 +187,6 @@ class SignIn extends StatelessWidget {
                   ),
                 ),
               ),
-              // ),
             ],
           ),
         ),
