@@ -181,7 +181,7 @@ class _WelcomePageState extends State<WelcomePage>
                   child: Icon(
                     Icons.keyboard_arrow_down,
                     color: Colors.white.withOpacity(0.7),
-                    size: 40,
+                    size: 60,
                   ),
                 ),
               ),
