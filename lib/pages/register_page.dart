@@ -1,5 +1,6 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:tugasuas/auth/auth_service.dart';
@@ -20,8 +21,19 @@ class RegisterPage extends StatelessWidget {
 
     if (_passwordController.text == _confirmPasswordController.text) {
       try {
+        showDialog(
+          context: context,
+          builder: (context) {
+            return Center(
+              child: CircularProgressIndicator(),
+            );
+          },
+        );
+
         await auth.signUpWithEmailAndPassword(
             _emailController.text, _passwordController.text);
+
+        Navigator.of(context).pop();
 
         // navigasi ke halaman utama jika berhasil register
         Navigator.pushReplacement(
@@ -51,199 +63,210 @@ class RegisterPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
+
     return Scaffold(
       body: Container(
-        decoration: BoxDecoration(),
-        child: SafeArea(
-          child: ListView(
-            children: [
-              SizedBox(
-                height: size.height * 0.03,
-              ),
-              Text(
-                "Welcome to Travoy",
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 35,
-                  color: Colors.black,
+        height: double.maxFinite,
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [Colors.blueAccent, Colors.white],
+          ),
+        ),
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: EdgeInsets.all(size.height * 0.01),
+            child: Column(
+              children: [
+                Image.asset(
+                  "img/lock.png",
+                  height: size.height * 0.3,
                 ),
-              ),
-              SizedBox(
-                height: size.height * 0.04,
-              ),
-              inputField(
-                "email",
-                Colors.white,
-                _emailController,
-              ),
-              inputField(
-                "Password",
-                Colors.black26,
-                _passwordController,
-                isPassword: true,
-              ),
-              inputField(
-                "Confirm Password",
-                Colors.black26,
-                _confirmPasswordController,
-                isPassword: true,
-              ),
-              SizedBox(
-                height: size.height * 0.04,
-              ),
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: 25),
-                child: GestureDetector(
-                  onTap: () {
-                    register(context);
-                  },
+                Text(
+                  "Welcome To Travoy",
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 30,
+                    color: Colors.white.withOpacity(0.8),
+                  ),
+                ),
+                SizedBox(
+                  height: size.height * 0.01,
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: TextField(
+                    controller: _emailController,
+                    style: TextStyle(
+                      color: Colors.black,
+                    ),
+                    keyboardType: TextInputType.emailAddress,
+                    decoration: InputDecoration(
+                      contentPadding: EdgeInsets.symmetric(
+                        vertical: 18,
+                      ),
+                      filled: true,
+                      fillColor: Colors.white,
+                      hintText: "Email",
+                      prefixIcon: Icon(Icons.person),
+                      border: OutlineInputBorder(
+                        borderSide: BorderSide.none,
+                        borderRadius: BorderRadius.circular(37),
+                      ),
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: TextField(
+                    controller: _passwordController,
+                    obscureText: true,
+                    style: TextStyle(
+                      color: Colors.black,
+                    ),
+                    keyboardType: TextInputType.emailAddress,
+                    decoration: InputDecoration(
+                      contentPadding: EdgeInsets.symmetric(
+                        vertical: 18,
+                      ),
+                      filled: true,
+                      fillColor: Colors.white,
+                      hintText: "Password",
+                      prefixIcon: Icon(Icons.key),
+                      border: OutlineInputBorder(
+                        borderSide: BorderSide.none,
+                        borderRadius: BorderRadius.circular(37),
+                      ),
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: TextField(
+                    controller: _confirmPasswordController,
+                    obscureText: true,
+                    style: TextStyle(
+                      color: Colors.black,
+                    ),
+                    keyboardType: TextInputType.emailAddress,
+                    decoration: InputDecoration(
+                      contentPadding: EdgeInsets.symmetric(
+                        vertical: 18,
+                      ),
+                      filled: true,
+                      fillColor: Colors.white,
+                      hintText: "Confirm Password",
+                      prefixIcon: Icon(Icons.key),
+                      border: OutlineInputBorder(
+                        borderSide: BorderSide.none,
+                        borderRadius: BorderRadius.circular(37),
+                      ),
+                    ),
+                  ),
+                ),
+                CupertinoButton(
                   child: Container(
-                    width: size.width,
-                    padding: EdgeInsets.symmetric(vertical: 20),
+                    alignment: Alignment.center,
+                    height: size.height * 0.07,
+                    width: double.maxFinite,
                     decoration: BoxDecoration(
                       color: Colors.blueAccent,
+                      borderRadius: BorderRadius.circular(37),
+                    ),
+                    child: Text(
+                      "Register",
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 25,
+                      ),
+                    ),
+                  ),
+                  onPressed: () {
+                    register(context);
+                  },
+                ),
+                SizedBox(
+                  height: size.height * 0.01,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Container(
+                      height: 2,
+                      width: size.width * 0.2,
+                      color: Colors.black12,
+                    ),
+                    Text(
+                      "    Or Continue With    ",
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black38,
+                        fontSize: 16,
+                      ),
+                    ),
+                    Container(
+                      height: 2,
+                      width: size.width * 0.2,
+                      color: Colors.black12,
+                    ),
+                  ],
+                ),
+                SizedBox(
+                  height: size.height * 0.01,
+                ),
+                CupertinoButton(
+                  child: Container(
+                    padding: EdgeInsets.all(15),
+                    child: Image.asset("img/google.png"),
+                    alignment: Alignment.center,
+                    height: size.height * 0.07,
+                    width: size.height * 0.07,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
                       borderRadius: BorderRadius.circular(15),
                     ),
-                    child: Center(
-                      child: Text(
-                        "Register",
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
-                          fontSize: 22,
-                        ),
+                  ),
+                  onPressed: () {
+                    AuthService().signInWithGoogle();
+                  },
+                ),
+                SizedBox(
+                  height: size.height * 0.04,
+                ),
+                Center(
+                  child: Text.rich(
+                    TextSpan(
+                      text: "Already Have Account? ",
+                      style: TextStyle(
+                        color: Colors.black26,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 15,
                       ),
+                      children: [
+                        TextSpan(
+                          text: "Login",
+                          style: TextStyle(
+                            color: Colors.blueAccent,
+                            fontWeight: FontWeight.bold,
+                          ),
+                          recognizer: TapGestureRecognizer()
+                            ..onTap = () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => Login(),
+                                ),
+                              );
+                            },
+                        ),
+                      ],
                     ),
                   ),
                 ),
-              ),
-              SizedBox(
-                height: size.height * 0.06,
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Container(
-                    height: 2,
-                    width: size.width * 0.2,
-                    color: Colors.black12,
-                  ),
-                  Text(
-                    "    Or Continue With    ",
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black38,
-                      fontSize: 16,
-                    ),
-                  ),
-                  Container(
-                    height: 2,
-                    width: size.width * 0.2,
-                    color: Colors.black12,
-                  ),
-                ],
-              ),
-              SizedBox(
-                height: size.height * 0.06,
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  socialMediaLogin("img/google.png"),
-                  socialMediaLogin("img/apple.png"),
-                ],
-              ),
-              SizedBox(
-                height: size.height * 0.06,
-              ),
-              Center(
-                child: Text.rich(
-                  TextSpan(
-                    text: "Already Have Account? ",
-                    style: TextStyle(
-                      color: Colors.black26,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 15,
-                    ),
-                    children: [
-                      TextSpan(
-                        text: "Login Now",
-                        style: TextStyle(
-                          color: Colors.blueAccent,
-                          fontWeight: FontWeight.bold,
-                        ),
-                        recognizer: TapGestureRecognizer()
-                          ..onTap = () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => SignIn(),
-                              ),
-                            );
-                          },
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  Container socialMediaLogin(String ref) {
-    return Container(
-      padding: EdgeInsets.symmetric(
-        horizontal: 28,
-        vertical: 15,
-      ),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(
-          color: Colors.black26,
-          width: 2,
-        ),
-      ),
-      child: Image.asset(
-        ref,
-        height: 30,
-      ),
-    );
-  }
-
-  Container inputField(
-      String hint, Color color, TextEditingController controller,
-      {bool isPassword = false}) {
-    return Container(
-      padding: EdgeInsets.symmetric(
-        horizontal: 25,
-        vertical: 10,
-      ),
-      child: TextField(
-        controller: controller,
-        obscureText: isPassword,
-        decoration: InputDecoration(
-          contentPadding: EdgeInsets.symmetric(
-            horizontal: 20,
-            vertical: 22,
-          ),
-          fillColor: Colors.white,
-          filled: true,
-          border: OutlineInputBorder(
-            borderSide: BorderSide.none,
-            borderRadius: BorderRadius.circular(15),
-          ),
-          hintText: hint,
-          hintStyle: TextStyle(
-            color: Colors.black45,
-            fontSize: 19,
-          ),
-          suffixIcon: Icon(
-            Icons.visibility_off_outlined,
-            color: isPassword ? Colors.black26 : Colors.black26,
+              ],
+            ),
           ),
         ),
       ),
