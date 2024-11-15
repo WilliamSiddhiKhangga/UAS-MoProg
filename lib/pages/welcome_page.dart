@@ -13,7 +13,7 @@ class WelcomePage extends StatefulWidget {
 
 class _WelcomePageState extends State<WelcomePage>
     with SingleTickerProviderStateMixin {
-  PageController _pageController = PageController();
+  final PageController _pageController = PageController();
   late AnimationController _animationController;
   late Animation<Offset> _offsetAnimation;
   int _currentIndex = 0;
@@ -93,75 +93,41 @@ class _WelcomePageState extends State<WelcomePage>
                     image: AssetImage("img/" + images[index]),
                     fit: BoxFit.cover,
                     colorFilter: ColorFilter.mode(
-                        Colors.black.withOpacity(0.3), BlendMode.darken),
+                        Colors.black.withOpacity(0.45), BlendMode.darken),
                   ),
                 ),
                 child: Container(
                   margin: const EdgeInsets.only(top: 150, left: 20, right: 20),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Container(
-                            width: MediaQuery.of(context).size.width * 0.8,
-                            padding: const EdgeInsets.all(16.0),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                AppLargeText(
-                                  text: content[index]["title"]!,
-                                  color: Colors.white,
-                                ),
-                                const SizedBox(height: 10),
-                                AppText(
-                                  text: content[index]["subtitle"]!,
-                                  size: 20,
-                                  color: Colors.white,
-                                ),
-                                const SizedBox(height: 20),
-                                SizedBox(
-                                  width: 250,
-                                  child: AppText(
-                                    text: content[index]["description"]!,
-                                    color: Colors.white,
-                                    size: 14,
-                                  ),
-                                ),
-                              ],
+                      Container(
+                        width: MediaQuery.of(context).size.width * 0.8,
+                        padding: const EdgeInsets.all(16.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            AppLargeText(
+                              text: content[index]["title"]!,
+                              color: const Color.fromARGB(255, 105, 190, 229),
                             ),
-                          ),
-                          const SizedBox(height: 40),
-                          if (index ==
-                              images.length -
-                                  1) // Hanya tampilkan di halaman terakhir
-                            ResponsiveButton(
-                              onPressed: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => MainPage(),
-                                  ),
-                                );
-                              },
+                            const SizedBox(height: 10),
+                            AppText(
+                              text: content[index]["subtitle"]!,
+                              size: 20,
+                              color: Colors.white,
                             ),
-                        ],
-                      ),
-                      Column(
-                        children: List.generate(images.length, (indexDots) {
-                          return Container(
-                            margin: const EdgeInsets.only(bottom: 3),
-                            width: 8,
-                            height: _currentIndex == indexDots ? 25 : 8,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(8),
-                              color: _currentIndex == indexDots
-                                  ? Colors.black54
-                                  : Colors.black54.withOpacity(0.3),
+                            const SizedBox(height: 20),
+                            SizedBox(
+                              width: 250,
+                              child: AppText(
+                                text: content[index]["description"]!,
+                                color: Colors.white,
+                                size: 14,
+                              ),
                             ),
-                          );
-                        }),
+                          ],
+                        ),
                       ),
                     ],
                   ),
@@ -169,10 +135,50 @@ class _WelcomePageState extends State<WelcomePage>
               );
             },
           ),
-          // Panah ke bawah dengan animasi, disembunyikan di halaman terakhir
+          // Posisi tombol di tengah layar hanya pada halaman terakhir
+          if (_currentIndex == images.length - 1)
+            Positioned(
+              bottom: 50,
+              left: 0,
+              right: 0,
+              child: Center(
+                child: ResponsiveButton(
+                  width: 310,
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => MainPage(),
+                      ),
+                    );
+                  },
+                ),
+              ),
+            ),
+          // Posisi dots slider di sebelah kanan layar
+          Positioned(
+            right: 20,
+            top: MediaQuery.of(context).size.height / 2,
+            child: Column(
+              children: List.generate(images.length, (indexDots) {
+                return Container(
+                  margin: const EdgeInsets.only(bottom: 3),
+                  width: 8,
+                  height: _currentIndex == indexDots ? 25 : 8,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(8),
+                    color: _currentIndex == indexDots
+                        ? Colors.black54
+                        : Colors.black54.withOpacity(0.3),
+                  ),
+                );
+              }),
+            ),
+          ),
+          // Ikon panah pada halaman selain terakhir
           if (_currentIndex != images.length - 1)
             Positioned(
-              bottom: 20,
+              bottom: 70,
               left: 0,
               right: 0,
               child: Center(
@@ -180,7 +186,7 @@ class _WelcomePageState extends State<WelcomePage>
                   position: _offsetAnimation,
                   child: Icon(
                     Icons.keyboard_arrow_down,
-                    color: Colors.white.withOpacity(0.7),
+                    color: Colors.grey.shade100.withOpacity(0.4),
                     size: 60,
                   ),
                 ),

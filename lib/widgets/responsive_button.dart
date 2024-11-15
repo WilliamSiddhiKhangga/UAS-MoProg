@@ -44,18 +44,18 @@ class _ResponsiveButtonState extends State<ResponsiveButton> {
         child: Container(
           height: 70,
           width: widget.isResponsive == true
-              ? MediaQuery.of(context).size.width * 0.8
+              ? MediaQuery.of(context).size.width * 0.9
               : widget.width,
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(20),
+            borderRadius: BorderRadius.circular(50),
             color: Colors.blue, // Warna latar tombol
           ),
           child: Center(
             child: Text(
-              '  Get Started!!  ',
+              '  GET STARTED!!  ',
               style: TextStyle(
                 color: Colors.white,
-                fontSize: 16,
+                fontSize: 20,
                 fontWeight: FontWeight.bold,
               ),
             ),
