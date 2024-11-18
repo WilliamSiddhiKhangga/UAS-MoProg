@@ -1,40 +1,60 @@
+// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
+
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:tugasuas/auth/auth_service.dart';
-import 'package:flutter/gestures.dart';
-import 'package:tugasuas/pages/forgot_password_page.dart';
-import 'package:tugasuas/pages/register_page.dart';
+import 'package:tugasuas/pages/login_page.dart';
+import 'package:tugasuas/pages/navpages/main_page.dart';
 
-class Login extends StatelessWidget {
+class RegisterPage extends StatelessWidget {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _confirmPasswordController =
+      TextEditingController();
 
-  Login({super.key});
+  RegisterPage({super.key});
 
-  void login(BuildContext context) async {
-    // auth
+  void register(BuildContext context) async {
+    // auth service
     final auth = AuthService();
 
-    // try login
-    try {
+    if (_passwordController.text == _confirmPasswordController.text) {
+      try {
+        showDialog(
+          context: context,
+          builder: (context) {
+            return Center(
+              child: CircularProgressIndicator(),
+            );
+          },
+        );
+
+        await auth.signUpWithEmailAndPassword(
+            _emailController.text, _passwordController.text);
+
+        Navigator.of(context).pop();
+
+        // navigasi ke halaman utama jika berhasil register
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => MainPage(),
+          ),
+        );
+      } catch (e) {
+        showDialog(
+          context: context,
+          builder: ((context) => AlertDialog(
+                title: Text(e.toString()),
+              )),
+        );
+      }
+    } else {
       showDialog(
         context: context,
-        builder: (context) {
-          return Center(
-            child: CircularProgressIndicator(),
-          );
-        },
-      );
-
-      await auth.signInWithEmailAndPassword(
-          _emailController.text, _passwordController.text);
-
-      Navigator.of(context).pop();
-    } catch (e) {
-      showDialog(
-        context: context,
-        builder: ((context) => AlertDialog(
-              title: Text(e.toString()),
+        builder: ((context) => const AlertDialog(
+              title: Text("Password don't match"),
             )),
       );
     }
@@ -60,14 +80,14 @@ class Login extends StatelessWidget {
             child: Column(
               children: [
                 Image.asset(
-                  "img/Login.png",
-                  height: size.height * 0.35,
+                  "img/lock.png",
+                  height: size.height * 0.3,
                 ),
                 Text(
-                  "Welcome Back",
+                  "Welcome To Travoy",
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
-                    fontSize: 40,
+                    fontSize: 30,
                     color: Colors.white.withOpacity(0.8),
                   ),
                 ),
@@ -121,31 +141,29 @@ class Login extends StatelessWidget {
                     ),
                   ),
                 ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 20),
-                      child: GestureDetector(
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => ForgotPassword(),
-                            ),
-                          );
-                        },
-                        child: Text(
-                          "Forgot Password",
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            color: Colors.black38,
-                            fontSize: 15,
-                          ),
-                        ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: TextField(
+                    controller: _confirmPasswordController,
+                    obscureText: true,
+                    style: TextStyle(
+                      color: Colors.black,
+                    ),
+                    keyboardType: TextInputType.emailAddress,
+                    decoration: InputDecoration(
+                      contentPadding: EdgeInsets.symmetric(
+                        vertical: 18,
+                      ),
+                      filled: true,
+                      fillColor: Colors.white,
+                      hintText: "Confirm Password",
+                      prefixIcon: Icon(Icons.key),
+                      border: OutlineInputBorder(
+                        borderSide: BorderSide.none,
+                        borderRadius: BorderRadius.circular(37),
                       ),
                     ),
-                  ],
+                  ),
                 ),
                 CupertinoButton(
                   child: Container(
@@ -157,7 +175,7 @@ class Login extends StatelessWidget {
                       borderRadius: BorderRadius.circular(37),
                     ),
                     child: Text(
-                      "Log In",
+                      "Register",
                       style: TextStyle(
                         color: Colors.white,
                         fontWeight: FontWeight.bold,
@@ -166,7 +184,7 @@ class Login extends StatelessWidget {
                     ),
                   ),
                   onPressed: () {
-                    login(context);
+                    register(context);
                   },
                 ),
                 SizedBox(
@@ -220,7 +238,7 @@ class Login extends StatelessWidget {
                 Center(
                   child: Text.rich(
                     TextSpan(
-                      text: "Doesn't Have Account? ",
+                      text: "Already Have Account? ",
                       style: TextStyle(
                         color: Colors.black26,
                         fontWeight: FontWeight.bold,
@@ -228,7 +246,7 @@ class Login extends StatelessWidget {
                       ),
                       children: [
                         TextSpan(
-                          text: "Register Now",
+                          text: "Login",
                           style: TextStyle(
                             color: Colors.blueAccent,
                             fontWeight: FontWeight.bold,
@@ -238,7 +256,7 @@ class Login extends StatelessWidget {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) => RegisterPage(),
+                                  builder: (context) => Login(),
                                 ),
                               );
                             },
