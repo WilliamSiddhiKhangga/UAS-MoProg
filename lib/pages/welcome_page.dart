@@ -13,18 +13,18 @@ class WelcomePage extends StatefulWidget {
 
 class _WelcomePageState extends State<WelcomePage>
     with SingleTickerProviderStateMixin {
-  final final PageController _pageController = PageController();
+  final PageController _pageController = PageController();
   late AnimationController _animationController;
   late Animation<Offset> _offsetAnimation;
   int _currentIndex = 0;
 
-  List images = [
+  final List<String> images = [
     "fuji.png",
     "paris.png",
     "liberty.png",
   ];
 
-  List<Map<String, String>> content = [
+  final List<Map<String, String>> content = [
     {
       "title": "Majestic Mt. Fuji",
       "subtitle": "Symbol of Japan",
@@ -51,11 +51,11 @@ class _WelcomePageState extends State<WelcomePage>
     _animationController = AnimationController(
       vsync: this,
       duration: const Duration(seconds: 1),
-    )..repeat(reverse: true);
+    );
 
     _offsetAnimation = Tween<Offset>(
-      begin: Offset(0, 0),
-      end: Offset(0, 0.2),
+      begin: Offset.zero,
+      end: const Offset(0, 0.2),
     ).animate(CurvedAnimation(
       parent: _animationController,
       curve: Curves.easeInOut,
@@ -66,6 +66,14 @@ class _WelcomePageState extends State<WelcomePage>
         _currentIndex = _pageController.page!.round();
       });
     });
+
+    _startArrowAnimation();
+  }
+
+  void _startArrowAnimation() {
+    if (_currentIndex != images.length - 1) {
+      _animationController.repeat(reverse: true);
+    }
   }
 
   @override
@@ -85,15 +93,18 @@ class _WelcomePageState extends State<WelcomePage>
             scrollDirection: Axis.vertical,
             itemCount: images.length,
             itemBuilder: (context, index) {
+              final item = content[index];
               return Container(
-                width: double.maxFinite,
-                height: double.maxFinite,
+                width: double.infinity,
+                height: double.infinity,
                 decoration: BoxDecoration(
                   image: DecorationImage(
-                    image: AssetImage("img/" + images[index]),
+                    image: AssetImage("img/${images[index]}"),
                     fit: BoxFit.cover,
                     colorFilter: ColorFilter.mode(
-                        Colors.black.withOpacity(0.45), BlendMode.darken),
+                      Colors.black.withOpacity(0.45),
+                      BlendMode.darken,
+                    ),
                   ),
                 ),
                 child: Container(
@@ -108,23 +119,20 @@ class _WelcomePageState extends State<WelcomePage>
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             AppLargeText(
-                              text: content[index]["title"]!,
+                              text: item["title"]!,
                               color: const Color.fromARGB(255, 105, 190, 229),
                             ),
                             const SizedBox(height: 10),
                             AppText(
-                              text: content[index]["subtitle"]!,
+                              text: item["subtitle"]!,
                               size: 20,
                               color: Colors.white,
                             ),
                             const SizedBox(height: 20),
-                            SizedBox(
-                              width: 250,
-                              child: AppText(
-                                text: content[index]["description"]!,
-                                color: Colors.white,
-                                size: 14,
-                              ),
+                            AppText(
+                              text: item["description"]!,
+                              color: Colors.white,
+                              size: 14,
                             ),
                           ],
                         ),
@@ -135,7 +143,6 @@ class _WelcomePageState extends State<WelcomePage>
               );
             },
           ),
-          // Posisi tombol di tengah layar hanya pada halaman terakhir
           if (_currentIndex == images.length - 1)
             Positioned(
               bottom: 50,
@@ -148,15 +155,13 @@ class _WelcomePageState extends State<WelcomePage>
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => AuthGate(),
-                                      // builder: (context) => Login(),
+                        builder: (context) => const AuthGate(),
                       ),
                     );
                   },
                 ),
               ),
             ),
-          // Posisi dots slider di sebelah kanan layar
           Positioned(
             right: 20,
             top: MediaQuery.of(context).size.height / 2,
@@ -176,7 +181,6 @@ class _WelcomePageState extends State<WelcomePage>
               }),
             ),
           ),
-          // Ikon panah pada halaman selain terakhir
           if (_currentIndex != images.length - 1)
             Positioned(
               bottom: 70,
