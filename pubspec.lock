@@ -14,16 +14,20 @@ packages:
     description:
       name: async
       sha256: "947bfcf187f74dbc5e146c9eb9c0f10c9f8b30743e341481c1e2ed3ecc18c20c"
+      sha256: "947bfcf187f74dbc5e146c9eb9c0f10c9f8b30743e341481c1e2ed3ecc18c20c"
       url: "https://pub.dev"
     source: hosted
+    version: "2.11.0"
     version: "2.11.0"
   boolean_selector:
     dependency: transitive
     description:
       name: boolean_selector
       sha256: "6cfb5af12253eaf2b368f07bacc5a80d1301a071c73360d746b7f2e32d762c66"
+      sha256: "6cfb5af12253eaf2b368f07bacc5a80d1301a071c73360d746b7f2e32d762c66"
       url: "https://pub.dev"
     source: hosted
+    version: "2.1.1"
     version: "2.1.1"
   characters:
     dependency: transitive
@@ -38,16 +42,20 @@ packages:
     description:
       name: clock
       sha256: cb6d7f03e1de671e34607e909a7213e31d7752be4fb66a86d29fe1eb14bfb5cf
+      sha256: cb6d7f03e1de671e34607e909a7213e31d7752be4fb66a86d29fe1eb14bfb5cf
       url: "https://pub.dev"
     source: hosted
+    version: "1.1.1"
     version: "1.1.1"
   collection:
     dependency: transitive
     description:
       name: collection
       sha256: ee67cb0715911d28db6bf4af1026078bd6f0128b07a5f66fb2ed94ec6783c09a
+      sha256: ee67cb0715911d28db6bf4af1026078bd6f0128b07a5f66fb2ed94ec6783c09a
       url: "https://pub.dev"
     source: hosted
+    version: "1.18.0"
     version: "1.18.0"
   cupertino_icons:
     dependency: "direct main"
@@ -205,16 +213,20 @@ packages:
     description:
       name: leak_tracker
       sha256: "3f87a60e8c63aecc975dda1ceedbc8f24de75f09e4856ea27daf8958f2f0ce05"
+      sha256: "3f87a60e8c63aecc975dda1ceedbc8f24de75f09e4856ea27daf8958f2f0ce05"
       url: "https://pub.dev"
     source: hosted
+    version: "10.0.5"
     version: "10.0.5"
   leak_tracker_flutter_testing:
     dependency: transitive
     description:
       name: leak_tracker_flutter_testing
       sha256: "932549fb305594d82d7183ecd9fa93463e9914e1b67cacc34bc40906594a1806"
+      sha256: "932549fb305594d82d7183ecd9fa93463e9914e1b67cacc34bc40906594a1806"
       url: "https://pub.dev"
     source: hosted
+    version: "3.0.5"
     version: "3.0.5"
   leak_tracker_testing:
     dependency: transitive
@@ -277,6 +289,7 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.99"
+    version: "0.0.99"
   source_span:
     dependency: transitive
     description:
@@ -290,8 +303,10 @@ packages:
     description:
       name: stack_trace
       sha256: "73713990125a6d93122541237550ee3352a2d84baad52d375a4cad2eb9b7ce0b"
+      sha256: "73713990125a6d93122541237550ee3352a2d84baad52d375a4cad2eb9b7ce0b"
       url: "https://pub.dev"
     source: hosted
+    version: "1.11.1"
     version: "1.11.1"
   stream_channel:
     dependency: transitive
@@ -306,8 +321,10 @@ packages:
     description:
       name: string_scanner
       sha256: "556692adab6cfa87322a115640c11f13cb77b3f076ddcc5d6ae3c20242bedcde"
+      sha256: "556692adab6cfa87322a115640c11f13cb77b3f076ddcc5d6ae3c20242bedcde"
       url: "https://pub.dev"
     source: hosted
+    version: "1.2.0"
     version: "1.2.0"
   term_glyph:
     dependency: transitive

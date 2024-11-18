@@ -5,11 +5,10 @@ class BarItemPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-        child: Center(
-      child: Text(
-        "Bar Item Page",
-      ),
-    ));
+    return Center(
+          child: Text(
+    "Bar Item Page",
+          ),
+        );
   }
 }
