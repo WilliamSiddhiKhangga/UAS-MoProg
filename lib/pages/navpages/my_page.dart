@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:tugasuas/auth/auth_service.dart';
-import 'package:tugasuas/pages/welcome_page.dart';
 
 class MyPage extends StatelessWidget {
   const MyPage({super.key});
