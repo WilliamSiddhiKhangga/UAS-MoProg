@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:tugasuas/pages/login_page.dart';
-import 'package:tugasuas/pages/navpages/main_page.dart';
 import 'package:tugasuas/widgets/app_large_text.dart';
 import 'package:tugasuas/widgets/app_text.dart';
 import 'package:tugasuas/widgets/responsive_button.dart';
@@ -13,7 +12,7 @@ class WelcomePage extends StatefulWidget {
 }
 
 class _WelcomePageState extends State<WelcomePage> {
-  PageController _pageController = PageController();
+  final PageController _pageController = PageController();
 
   List images = [
     "fuji.png",

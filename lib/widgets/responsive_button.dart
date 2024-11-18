@@ -6,7 +6,7 @@ class ResponsiveButton extends StatelessWidget {
   final double? width;
   final VoidCallback onPressed; // Tambahkan onPressed sebagai parameter
 
-  ResponsiveButton({
+  const ResponsiveButton({
     this.width,
     this.isResponsive,
     required this.onPressed, // Pastikan onPressed bersifat required
