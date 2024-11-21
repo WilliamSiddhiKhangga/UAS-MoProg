@@ -201,7 +201,6 @@ class Login extends StatelessWidget {
                 CupertinoButton(
                   child: Container(
                     padding: EdgeInsets.all(15),
-                    child: Image.asset("img/google.png"),
                     alignment: Alignment.center,
                     height: size.height * 0.07,
                     width: size.height * 0.07,
@@ -209,6 +208,7 @@ class Login extends StatelessWidget {
                       color: Colors.white,
                       borderRadius: BorderRadius.circular(15),
                     ),
+                    child: Image.asset("img/google.png"),
                   ),
                   onPressed: () {
                     AuthService().signInWithGoogle();
