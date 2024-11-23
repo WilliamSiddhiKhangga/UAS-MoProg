@@ -3,11 +3,18 @@ import 'package:tugasuas/auth/auth_service.dart';
 import 'package:tugasuas/pages/welcome_page.dart';
 import 'package:tugasuas/pages/navpages/main_page.dart';
 
-class MyPage extends StatelessWidget {
+class MyPage extends StatefulWidget {
   const MyPage({Key? key}) : super(key: key);
 
+  @override
+  _MyPageState createState() => _MyPageState();
+}
+
+class _MyPageState extends State<MyPage> {
+  String userName = 'Brandon Alexander Jayadi';
+  String userEmail = 'test@gmail.com';
+
   void logOut(BuildContext context) async {
-    // get auth service
     final auth = AuthService();
     await auth.signOut();
   }
@@ -21,12 +28,7 @@ class MyPage extends StatelessWidget {
         backgroundColor: const Color.fromARGB(215, 24, 157, 239),
         elevation: 0,
         iconTheme: const IconThemeData(color: Colors.black),
-        actions: [
-          IconButton(
-            onPressed: () => logOut(context),
-            icon: const Icon(Icons.logout),
-          ),
-        ],
+        actions: [],
       ),
       body: ListView(
         padding: const EdgeInsets.all(16),
@@ -37,8 +39,56 @@ class MyPage extends StatelessWidget {
                 Stack(
                   alignment: Alignment.bottomRight,
                   children: [
-                    const CircleAvatar(
-                      radius: 50,
+                    GestureDetector(
+                      onTap: () {
+                        showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return Stack(
+                              children: [
+                                GestureDetector(
+                                  onTap: () => Navigator.pop(context),
+                                  child: Container(
+                                    color: Colors.black.withOpacity(0.8),
+                                  ),
+                                ),
+                                Center(
+                                  child: CircleAvatar(
+                                    radius: 150,
+                                    backgroundColor: Colors.grey[300],
+                                    child: const Icon(
+                                      Icons.person,
+                                      size: 150,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                ),
+                                Positioned(
+                                  top: 20,
+                                  right: 20,
+                                  child: IconButton(
+                                    onPressed: () => Navigator.pop(context),
+                                    icon: const Icon(
+                                      Icons.close,
+                                      color: Colors.white,
+                                      size: 30,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            );
+                          },
+                        );
+                      },
+                      child: CircleAvatar(
+                        radius: 50,
+                        backgroundColor: Colors.grey[300],
+                        child: const Icon(
+                          Icons.person,
+                          size: 50,
+                          color: Colors.white,
+                        ),
+                      ),
                     ),
                     Positioned(
                       bottom: 5,
@@ -63,24 +113,34 @@ class MyPage extends StatelessWidget {
                   ],
                 ),
                 const SizedBox(height: 10),
-                const Text(
-                  'Brandon Alexander Jayadi',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                Text(
+                  userName,
+                  style: const TextStyle(
+                      fontSize: 18, fontWeight: FontWeight.bold),
                 ),
                 const SizedBox(height: 5),
-                const Text(
-                  'test@gmail.com',
-                  style: TextStyle(fontSize: 14, color: Colors.grey),
+                Text(
+                  userEmail,
+                  style: const TextStyle(fontSize: 14, color: Colors.grey),
                 ),
                 const SizedBox(height: 15),
                 ElevatedButton(
-                  onPressed: () {
-                    Navigator.push(
+                  onPressed: () async {
+                    final result = await Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => const EditProfilePage(),
+                        builder: (context) => EditProfilePage(
+                          currentName: userName,
+                          currentEmail: userEmail,
+                        ),
                       ),
                     );
+                    if (result != null) {
+                      setState(() {
+                        userName = result['name'];
+                        userEmail = result['email'];
+                      });
+                    }
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.yellow,
@@ -95,14 +155,20 @@ class MyPage extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 20),
-          // Menu Section
           Column(
             children: [
               _buildMenuItem(
                 context,
                 icon: Icons.settings,
                 title: 'Settings',
-                onTap: () {},
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const SettingsPage(),
+                    ),
+                  );
+                },
               ),
               _buildMenuItem(
                 context,
@@ -114,7 +180,14 @@ class MyPage extends StatelessWidget {
                 context,
                 icon: Icons.help_outline,
                 title: 'Customer Service',
-                onTap: () {},
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const CustomerServicePage(),
+                    ),
+                  );
+                },
               ),
               _buildMenuItem(
                 context,
@@ -127,14 +200,7 @@ class MyPage extends StatelessWidget {
                 icon: Icons.logout,
                 title: 'Logout',
                 textColor: Colors.red,
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => MainPage(),
-                    ),
-                  );
-                },
+                onTap: () => logOut(context),
               ),
             ],
           ),
@@ -162,7 +228,14 @@ class MyPage extends StatelessWidget {
 
 // Halaman Edit Profile
 class EditProfilePage extends StatefulWidget {
-  const EditProfilePage({Key? key}) : super(key: key);
+  final String currentName;
+  final String currentEmail;
+
+  const EditProfilePage({
+    Key? key,
+    required this.currentName,
+    required this.currentEmail,
+  }) : super(key: key);
 
   @override
   _EditProfilePageState createState() => _EditProfilePageState();
@@ -170,15 +243,14 @@ class EditProfilePage extends StatefulWidget {
 
 class _EditProfilePageState extends State<EditProfilePage> {
   final _formKey = GlobalKey<FormState>();
-  final TextEditingController _nameController = TextEditingController();
-  final TextEditingController _emailController = TextEditingController();
+  late TextEditingController _nameController;
+  late TextEditingController _emailController;
 
   @override
   void initState() {
     super.initState();
-    // Contoh data awal
-    _nameController.text = 'Brandon Alexander Jayadi';
-    _emailController.text = 'test@gmail.com';
+    _nameController = TextEditingController(text: widget.currentName);
+    _emailController = TextEditingController(text: widget.currentEmail);
   }
 
   @override
@@ -190,6 +262,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
         backgroundColor: const Color.fromARGB(215, 24, 157, 239),
         elevation: 0,
         iconTheme: const IconThemeData(color: Colors.black),
+      ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Form(
@@ -246,7 +319,10 @@ class _EditProfilePageState extends State<EditProfilePage> {
                 child: ElevatedButton(
                   onPressed: () {
                     if (_formKey.currentState!.validate()) {
-                      Navigator.pop(context);
+                      Navigator.pop(context, {
+                        'name': _nameController.text,
+                        'email': _emailController.text,
+                      });
                     }
                   },
                   style: ElevatedButton.styleFrom(
@@ -273,5 +349,104 @@ class _EditProfilePageState extends State<EditProfilePage> {
     _nameController.dispose();
     _emailController.dispose();
     super.dispose();
+  }
+}
+
+// Halaman Setting
+class SettingsPage extends StatelessWidget {
+  const SettingsPage({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Settings'),
+        centerTitle: true,
+        backgroundColor: const Color.fromARGB(215, 24, 157, 239),
+        elevation: 0,
+        iconTheme: const IconThemeData(color: Colors.black),
+      ),
+      body: ListView(
+        padding: const EdgeInsets.all(16.0),
+        children: [
+          ListTile(
+            leading: const Icon(Icons.notifications, color: Colors.blue),
+            title: const Text('Notifications'),
+            trailing: Switch(
+              value: true,
+              onChanged: (value) {},
+            ),
+          ),
+          ListTile(
+            leading: const Icon(Icons.lock, color: Colors.blue),
+            title: const Text('Privacy & Security'),
+            onTap: () {},
+          ),
+          ListTile(
+            leading: const Icon(Icons.language, color: Colors.blue),
+            title: const Text('Language'),
+            onTap: () {},
+          ),
+          ListTile(
+            leading: const Icon(Icons.update, color: Colors.blue),
+            title: const Text('App Updates'),
+            onTap: () {},
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+// Halaman Customer Service
+class CustomerServicePage extends StatelessWidget {
+  const CustomerServicePage({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Customer Service'),
+        centerTitle: true,
+        backgroundColor: const Color.fromARGB(215, 24, 157, 239),
+        elevation: 0,
+        iconTheme: const IconThemeData(color: Colors.black),
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text(
+              'Need Help?',
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 10),
+            const Text(
+              'Contact us anytime, and we’ll be happy to assist you:',
+              style: TextStyle(fontSize: 16),
+            ),
+            const SizedBox(height: 20),
+            ListTile(
+              leading: const Icon(Icons.email, color: Colors.blue),
+              title: const Text('Email Support'),
+              subtitle: const Text('TravoySupport@gmail.com'),
+              onTap: () {},
+            ),
+            ListTile(
+              leading: const Icon(Icons.phone, color: Colors.blue),
+              title: const Text('Call Support'),
+              subtitle: const Text('+62-523-555-088'),
+              onTap: () {},
+            ),
+            ListTile(
+              leading: const Icon(Icons.chat, color: Colors.blue),
+              title: const Text('Live Chat'),
+              onTap: () {},
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }
