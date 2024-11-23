@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:tugasuas/pages/login_page.dart';
-import 'package:tugasuas/pages/navpages/main_page.dart';
+import 'package:tugasuas/auth/auth_gate.dart';
 import 'package:tugasuas/widgets/app_large_text.dart';
 import 'package:tugasuas/widgets/app_text.dart';
 import 'package:tugasuas/widgets/responsive_button.dart';
@@ -107,7 +106,8 @@ class _WelcomePageState extends State<WelcomePage> {
                                     context,
                                     MaterialPageRoute(
                                       // builder: (context) => MainPage(),
-                                      builder: (context) => SignIn(),
+                                      builder: (context) => AuthGate(),
+                                      // builder: (context) => Login(),
                                     ),
                                   );
                                 },
