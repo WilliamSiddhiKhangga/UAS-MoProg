@@ -1,8 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:tugasuas/auth/auth_service.dart';
+import 'package:tugasuas/pages/welcome_page.dart';
 import 'package:tugasuas/pages/navpages/main_page.dart';
 
 class MyPage extends StatelessWidget {
   const MyPage({Key? key}) : super(key: key);
+
+  void logOut(BuildContext context) async {
+    // get auth service
+    final auth = AuthService();
+    await auth.signOut();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -13,6 +21,12 @@ class MyPage extends StatelessWidget {
         backgroundColor: const Color.fromARGB(215, 24, 157, 239),
         elevation: 0,
         iconTheme: const IconThemeData(color: Colors.black),
+        actions: [
+          IconButton(
+            onPressed: () => logOut(context),
+            icon: const Icon(Icons.logout),
+          ),
+        ],
       ),
       body: ListView(
         padding: const EdgeInsets.all(16),
@@ -176,7 +190,6 @@ class _EditProfilePageState extends State<EditProfilePage> {
         backgroundColor: const Color.fromARGB(215, 24, 157, 239),
         elevation: 0,
         iconTheme: const IconThemeData(color: Colors.black),
-      ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Form(
