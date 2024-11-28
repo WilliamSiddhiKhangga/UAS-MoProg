@@ -24,8 +24,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: const DetailPage(),
-      // home: const LogoPage(), // Mengatur halaman awal
+      home: const LogoPage(), // Mengatur halaman awal
     );
   }
 }
