@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "999742890451",
+    "project_id": "uas-mobprog-8994b",
+    "storage_bucket": "uas-mobprog-8994b.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:999742890451:android:492cfab94fe20a2c6acf26",
+        "android_client_info": {
+          "package_name": "com.example.tugasuas"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDoI7L1GW4ltWfenrqHKgLpJ30bjUxB-mo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

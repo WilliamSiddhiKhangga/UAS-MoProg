@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_unnecessary_containers
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:tugasuas/widgets/app_large_text.dart';
@@ -52,8 +54,9 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                 labelColor: Colors.black,
                 unselectedLabelColor: Colors.grey,
                 isScrollable: true,
+                dividerColor: Colors.transparent,
                 indicatorSize: TabBarIndicatorSize.label,
-                indicator: CircleTabIndicator(color: AppColors.mainColors, radius: 4),
+                indicator: CircleTabIndicator(color: Colors.lightBlue, radius: 4),
                 tabs: [
                   Tab(text: "Destinations"),
                   Tab(text: "Promo"),
@@ -62,12 +65,36 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
             ),
           ),
           Container(
+            padding: const EdgeInsets.only(left: 20, right: 20),
             height: 300,
             width: double.maxFinite,
             child: TabBarView(
               controller: _tabController,
               children: [
-              Text("Hi"),
+                ListView.builder(
+                  itemCount: 3,
+                  itemBuilder: (BuildContext context, int index) {
+                    final List<String> images = [
+                      "img/fuji.png",
+                      "img/liberty.png",
+                      "img/paris.png",
+                    ];
+
+                    return Container(
+                      margin: EdgeInsets.only(bottom:15, top: 5),
+                      width: 200,
+                      height: 150,
+                      decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(20),
+                      color: Colors.white,
+                      image: DecorationImage(
+                        image: AssetImage(images[index]),
+                        fit:BoxFit.cover
+                        ),
+                      ),
+                    ); 
+                  },
+                ),
               Text("there"),
             ]),
           ),
@@ -100,8 +127,8 @@ class _CirclePainter extends BoxPainter{
     Paint _paint = Paint();
     _paint.color = color;
     _paint.isAntiAlias = true;
-
-    canvas.drawCircle(offset, radius, _paint);
+    final Offset circleOffset = Offset(configuration.size!.width/2-radius/2, configuration.size!.height-radius);
+    canvas.drawCircle(offset+circleOffset, radius, _paint);
   }
     
 }
