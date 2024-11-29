@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tugasuas/firebase_options.dart';
+import 'package:tugasuas/pages/detail_page.dart';
 import 'package:tugasuas/pages/welcome_page.dart';
 import 'package:tugasuas/pages/navpages/home_page.dart'; 
 import 'package:tugasuas/pages/navpages/logo_page.dart'; 
