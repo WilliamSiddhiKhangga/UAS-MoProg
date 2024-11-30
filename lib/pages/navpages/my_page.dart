@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:tugasuas/auth/auth_gate.dart';
 import 'package:tugasuas/auth/auth_service.dart';
+import 'package:tugasuas/pages/navpages/customerservice_page.dart';
 import 'package:tugasuas/pages/welcome_page.dart';
 import 'package:tugasuas/pages/navpages/main_page.dart';
 
@@ -36,9 +37,10 @@ class _MyPageState extends State<MyPage> {
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.red,
               ),
-              child: const Text(
-                'Logout',
-              ),
+              child: const Text('Logout',
+                  style: TextStyle(
+                    color: Colors.white,
+                  )),
             ),
           ],
         );
@@ -433,59 +435,6 @@ class SettingsPage extends StatelessWidget {
             onTap: () {},
           ),
         ],
-      ),
-    );
-  }
-}
-
-// Halaman Customer Service
-class CustomerServicePage extends StatelessWidget {
-  const CustomerServicePage({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Customer Service'),
-        centerTitle: true,
-        backgroundColor: const Color.fromARGB(215, 24, 157, 239),
-        elevation: 0,
-        iconTheme: const IconThemeData(color: Colors.black),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Text(
-              'Need Help?',
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 10),
-            const Text(
-              'Contact us anytime, and we’ll be happy to assist you:',
-              style: TextStyle(fontSize: 16),
-            ),
-            const SizedBox(height: 20),
-            ListTile(
-              leading: const Icon(Icons.email, color: Colors.blue),
-              title: const Text('Email Support'),
-              subtitle: const Text('TravoySupport@gmail.com'),
-              onTap: () {},
-            ),
-            ListTile(
-              leading: const Icon(Icons.phone, color: Colors.blue),
-              title: const Text('Call Support'),
-              subtitle: const Text('+62-523-555-088'),
-              onTap: () {},
-            ),
-            ListTile(
-              leading: const Icon(Icons.chat, color: Colors.blue),
-              title: const Text('Live Chat'),
-              onTap: () {},
-            ),
-          ],
-        ),
       ),
     );
   }

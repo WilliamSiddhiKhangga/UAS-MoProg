@@ -74,6 +74,7 @@ flutter:
     - img/lock.png
     - img/Key.png
     - img/logo.png
+    - img/cs.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images
