@@ -37,7 +37,9 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                     left: 0,
                                     top: 0,
                                     child: Container(
-                                      decoration: BoxDecoration(borderRadius: BorderRadius.circular(15), color: Colors.lightBlue,
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(15),
+                                        color: Colors.lightBlue,
                                       ),
                                       padding: EdgeInsets.all(20),
                                       width: 200,
@@ -45,12 +47,15 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                         crossAxisAlignment:
                                             CrossAxisAlignment.start,
                                         children: [
-                                          AppLargeText(text: "About the Developer:", size: 20, color: Colors.white,),
+                                          AppLargeText(
+                                            text: "About the Developer:",
+                                            size: 20,
+                                            color: Colors.white,
+                                          ),
                                           SizedBox(height: 20),
                                           Text(
                                             'Alfian',
-                                            style: TextStyle(fontSize: 18),
-                                            
+                                            style: TextStyle(fontSize: 18),                                            
                                           ),
                                           SizedBox(height: 20),
                                           Text(
@@ -78,25 +83,27 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                     ),
                                   ),
                                   // Back Button
-                            Positioned(
-                              top: 350,
-                              right: 80,
-                              child: GestureDetector(
-                                onTap: () {
-                                  Navigator.pop(context); // Close the dialog
-                                },
-                                child: Container(
-                                  padding: EdgeInsets.all(10),
-                                  alignment: Alignment.bottomLeft,
-                                  // decoration: BoxDecoration(borderRadius: BorderRadius.circular(20), ),
-                                  // color: Colors.white,
-                                  child: AppLargeText(
-                                    text: "Back",
-                                    size: 18,
-                                    color: Colors.white, ),
+                                  Positioned(
+                                    top: 350,
+                                    right: 80,
+                                    child: GestureDetector(
+                                      onTap: () {
+                                        Navigator.pop(
+                                            context); // Close the dialog
+                                      },
+                                      child: Container(
+                                        padding: EdgeInsets.all(10),
+                                        alignment: Alignment.bottomLeft,
+                                        // decoration: BoxDecoration(borderRadius: BorderRadius.circular(20), ),
+                                        // color: Colors.white,
+                                        child: AppLargeText(
+                                          text: "Back",
+                                          size: 18,
+                                          color: Colors.white,
+                                        ),
+                                      ),
                                     ),
                                   ),
-                                 ),
                                 ],
                               ),
                             );
@@ -267,7 +274,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                               children: [
                                 AppLargeText(
                                   text: amount[index],
-                                  color: const Color.fromARGB(255, 105, 190, 229),
+                                  color:
+                                      const Color.fromARGB(255, 105, 190, 229),
                                 ),
                                 AppLargeText(
                                   text: texts[index],

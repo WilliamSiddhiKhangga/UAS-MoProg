@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tugasuas/auth/auth_gate.dart';
 import 'package:tugasuas/auth/auth_service.dart';
 import 'package:tugasuas/pages/welcome_page.dart';
 import 'package:tugasuas/pages/navpages/main_page.dart';
@@ -14,9 +15,47 @@ class _MyPageState extends State<MyPage> {
   String userName = 'Brandon Alexander Jayadi';
   String userEmail = 'test@gmail.com';
 
-  void logOut(BuildContext context) async {
+  // Confirmation for logout
+  void _showLogoutDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Confirm Logout'),
+          content: const Text('Are you sure you want to log out?'),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text('Cancel'),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.pop(context);
+                _logOut(context);
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.red,
+              ),
+              child: const Text(
+                'Logout',
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  // For Logout authentication
+  void _logOut(BuildContext context) async {
     final auth = AuthService();
     await auth.signOut();
+    // Redirect to Login_Page after logout
+    Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute(builder: (context) => const AuthGate()),
+      (route) => false,
+    );
   }
 
   @override
@@ -200,7 +239,7 @@ class _MyPageState extends State<MyPage> {
                 icon: Icons.logout,
                 title: 'Logout',
                 textColor: Colors.red,
-                onTap: () => logOut(context),
+                onTap: () => _showLogoutDialog(context),
               ),
             ],
           ),
@@ -238,6 +277,7 @@ class EditProfilePage extends StatefulWidget {
   }) : super(key: key);
 
   @override
+  // ignore: library_private_types_in_public_api
   _EditProfilePageState createState() => _EditProfilePageState();
 }
 
@@ -400,7 +440,7 @@ class SettingsPage extends StatelessWidget {
 
 // Halaman Customer Service
 class CustomerServicePage extends StatelessWidget {
-  const CustomerServicePage({Key? key}) : super(key: key);
+  const CustomerServicePage({super.key});
 
   @override
   Widget build(BuildContext context) {
