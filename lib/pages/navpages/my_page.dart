@@ -1,5 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:tugasuas/auth/auth_gate.dart';
 import 'package:tugasuas/auth/auth_service.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:tugasuas/pages/customerservice_page.dart';
+import 'package:tugasuas/pages/settings_page.dart';
+import 'package:tugasuas/pages/about_page.dart';
+// import 'package:tugasuas/pages/welcome_page.dart';
+// import 'package:tugasuas/pages/navpages/main_page.dart';
 
 class MyPage extends StatefulWidget {
   const MyPage({super.key});
@@ -9,12 +17,86 @@ class MyPage extends StatefulWidget {
 }
 
 class _MyPageState extends State<MyPage> {
-  String userName = 'Brandon Alexander Jayadi';
-  String userEmail = 'test@gmail.com';
+  String userName = '';
+  String userEmail = '';
+  String userPhone = '';
 
-  void logOut(BuildContext context) async {
+  // Fetch the data from database
+  Future<void> fetchUserData() async {
+    final User? user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      final doc = await FirebaseFirestore.instance
+          .collection('Users')
+          .doc(user.uid)
+          .get();
+
+      if (doc.exists) {
+        setState(() {
+          userName = doc.data()?['Name'] ?? 'Name not set';
+          userEmail = doc.data()?['Email'] ?? 'Email not set';
+          userPhone = doc.data()?['Phone'] ?? 'Phone not set';
+        });
+      } else {
+        await AuthService().createUserInFirestore(user);
+        fetchUserData();
+      }
+    } else {
+      Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(builder: (context) => const AuthGate()),
+        (route) => false,
+      );
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    fetchUserData();
+  }
+
+  // Confirmation for logout
+  void _showLogoutDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Confirm Logout'),
+          content: const Text('Are you sure you want to log out?'),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text('Cancel'),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.pop(context);
+                _logOut(context);
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.red,
+              ),
+              child: const Text('Logout',
+                  style: TextStyle(
+                    color: Colors.white,
+                  )),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  // For Logout authentication
+  void _logOut(BuildContext context) async {
     final auth = AuthService();
     await auth.signOut();
+    // Redirect to Login_Page after logout
+    Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute(builder: (context) => const AuthGate()),
+      (route) => false,
+    );
   }
 
   @override
@@ -50,6 +132,7 @@ class _MyPageState extends State<MyPage> {
                                     color: Colors.black.withOpacity(0.8),
                                   ),
                                 ),
+                                // Default Profile Photo (Icon)
                                 Center(
                                   child: CircleAvatar(
                                     radius: 150,
@@ -112,9 +195,14 @@ class _MyPageState extends State<MyPage> {
                 ),
                 const SizedBox(height: 10),
                 Text(
-                  userName,
+                  userName.isNotEmpty ? userName : 'Name not set',
                   style: const TextStyle(
                       fontSize: 18, fontWeight: FontWeight.bold),
+                ),
+                const SizedBox(height: 5),
+                Text(
+                  userPhone.isNotEmpty ? userPhone : 'Phone number not set',
+                  style: const TextStyle(fontSize: 14, color: Colors.grey),
                 ),
                 const SizedBox(height: 5),
                 Text(
@@ -130,6 +218,7 @@ class _MyPageState extends State<MyPage> {
                         builder: (context) => EditProfilePage(
                           currentName: userName,
                           currentEmail: userEmail,
+                          currentPhone: userPhone,
                         ),
                       ),
                     );
@@ -137,6 +226,7 @@ class _MyPageState extends State<MyPage> {
                       setState(() {
                         userName = result['name'];
                         userEmail = result['email'];
+                        userPhone = result['phone'];
                       });
                     }
                   },
@@ -191,14 +281,21 @@ class _MyPageState extends State<MyPage> {
                 context,
                 icon: Icons.info,
                 title: 'About Us',
-                onTap: () {},
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const AboutUsPage(),
+                    ),
+                  );
+                },
               ),
               _buildMenuItem(
                 context,
                 icon: Icons.logout,
                 title: 'Logout',
                 textColor: Colors.red,
-                onTap: () => logOut(context),
+                onTap: () => _showLogoutDialog(context),
               ),
             ],
           ),
@@ -228,14 +325,17 @@ class _MyPageState extends State<MyPage> {
 class EditProfilePage extends StatefulWidget {
   final String currentName;
   final String currentEmail;
+  final String currentPhone;
 
   const EditProfilePage({
     super.key,
     required this.currentName,
     required this.currentEmail,
-  });
+    required this.currentPhone,
+  }) : super(key: key);
 
   @override
+  // ignore: library_private_types_in_public_api
   _EditProfilePageState createState() => _EditProfilePageState();
 }
 
@@ -243,100 +343,265 @@ class _EditProfilePageState extends State<EditProfilePage> {
   final _formKey = GlobalKey<FormState>();
   late TextEditingController _nameController;
   late TextEditingController _emailController;
+  late TextEditingController _phoneController;
+
+  String _selectedCountryCode = "+62"; // Default kode negara
+
+  Future<void> saveUserData(
+      String uid, String name, String email, String phone) async {
+    final usersCollection = FirebaseFirestore.instance.collection('Users');
+
+    await usersCollection.doc(uid).set({
+      'Name': name,
+      'Email': email,
+      'Phone': phone,
+      'lastUpdated': DateTime.now(),
+    }, SetOptions(merge: true));
+  }
 
   @override
   void initState() {
     super.initState();
     _nameController = TextEditingController(text: widget.currentName);
     _emailController = TextEditingController(text: widget.currentEmail);
+    _phoneController = TextEditingController(
+        text: widget.currentPhone.replaceFirst("+62", ""));
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Edit Profile'),
+        title:
+            const Text('Edit Profile', style: TextStyle(color: Colors.white)),
         centerTitle: true,
-        backgroundColor: const Color.fromARGB(215, 24, 157, 239),
+        backgroundColor: const Color(0xFF0288D1), // Biru muda khas
         elevation: 0,
-        iconTheme: const IconThemeData(color: Colors.black),
+        iconTheme: const IconThemeData(color: Colors.white),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Form(
-          key: _formKey,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Text(
-                'Name',
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+      body: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            const SizedBox(height: 30),
+            const CircleAvatar(
+              radius: 50,
+              backgroundColor: Color.fromARGB(255, 207, 218, 223),
+              child: const Icon(
+                Icons.person,
+                size: 50,
+                color: Colors.white,
               ),
-              const SizedBox(height: 5),
-              TextFormField(
-                controller: _nameController,
-                decoration: InputDecoration(
-                  hintText: 'Enter your name',
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                ),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter your name';
-                  }
-                  return null;
-                },
+            ),
+            const SizedBox(height: 20),
+            Text(
+              'Edit Your Profile',
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.w600,
+                color: Colors.grey.shade700,
               ),
-              const SizedBox(height: 20),
-              const Text(
-                'Email',
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
-              ),
-              const SizedBox(height: 5),
-              TextFormField(
-                controller: _emailController,
-                decoration: InputDecoration(
-                  hintText: 'Enter your email',
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                ),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter your email';
-                  }
-                  if (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(value)) {
-                    return 'Please enter a valid email';
-                  }
-                  return null;
-                },
-              ),
-              const SizedBox(height: 30),
-              Center(
-                child: ElevatedButton(
-                  onPressed: () {
-                    if (_formKey.currentState!.validate()) {
-                      Navigator.pop(context, {
-                        'name': _nameController.text,
-                        'email': _emailController.text,
-                      });
-                    }
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.yellow,
-                    foregroundColor: Colors.black,
-                    padding: const EdgeInsets.symmetric(
-                        vertical: 15, horizontal: 30),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
+            ),
+            const SizedBox(height: 30),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              child: Container(
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(15),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.1),
+                      blurRadius: 10,
+                      spreadRadius: 2,
                     ),
+                  ],
+                ),
+                child: Form(
+                  key: _formKey,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text(
+                        'Name',
+                        style: TextStyle(
+                            fontSize: 16, fontWeight: FontWeight.w500),
+                      ),
+                      const SizedBox(height: 5),
+                      TextFormField(
+                        controller: _nameController,
+                        decoration: InputDecoration(
+                          hintText: 'Enter your name',
+                          filled: true,
+                          fillColor: Colors.grey.shade100,
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10),
+                            borderSide: BorderSide.none,
+                          ),
+                        ),
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Please enter your name';
+                          }
+                          return null;
+                        },
+                      ),
+                      const SizedBox(height: 20),
+                      const Text(
+                        'Email',
+                        style: TextStyle(
+                            fontSize: 16, fontWeight: FontWeight.w500),
+                      ),
+                      const SizedBox(height: 5),
+                      TextFormField(
+                        controller: _emailController,
+                        decoration: InputDecoration(
+                          hintText: 'Enter your email',
+                          filled: true,
+                          fillColor: Colors.grey.shade100,
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10),
+                            borderSide: BorderSide.none,
+                          ),
+                        ),
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Please enter your email';
+                          }
+                          if (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(value)) {
+                            return 'Please enter a valid email';
+                          }
+                          return null;
+                        },
+                      ),
+                      const SizedBox(height: 20),
+                      const Text(
+                        'Phone Number',
+                        style: TextStyle(
+                            fontSize: 16, fontWeight: FontWeight.w500),
+                      ),
+                      const SizedBox(height: 5),
+                      Row(
+                        children: [
+                          DropdownButton<String>(
+                            value: _selectedCountryCode,
+                            items: const [
+                              DropdownMenuItem(
+                                value: "+62",
+                                child: Text("+62"),
+                              ),
+                              DropdownMenuItem(
+                                value: "+1",
+                                child: Text("+1"),
+                              ),
+                              DropdownMenuItem(
+                                value: "+44",
+                                child: Text("+44"),
+                              ),
+                              DropdownMenuItem(
+                                value: "+91",
+                                child: Text("+91"),
+                              ),
+                            ],
+                            onChanged: (value) {
+                              setState(() {
+                                _selectedCountryCode = value!;
+                              });
+                            },
+                          ),
+                          const SizedBox(width: 10),
+                          Expanded(
+                            child: TextFormField(
+                              controller: _phoneController,
+                              keyboardType: TextInputType.number,
+                              decoration: InputDecoration(
+                                hintText: 'Enter your phone number',
+                                filled: true,
+                                fillColor: Colors.grey.shade100,
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                  borderSide: BorderSide.none,
+                                ),
+                              ),
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return 'Please enter your phone number';
+                                }
+                                if (!RegExp(r'^\d+$').hasMatch(value)) {
+                                  return 'Please enter only numbers';
+                                }
+                                return null;
+                              },
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 30),
+                      Center(
+                        child: ElevatedButton(
+                          onPressed: () async {
+                            if (_formKey.currentState!.validate()) {
+                              final user = FirebaseAuth.instance.currentUser;
+
+                              if (user != null) {
+                                try {
+                                  final phoneWithCode =
+                                      '$_selectedCountryCode${_phoneController.text}';
+
+                                  await user
+                                      .updateDisplayName(_nameController.text);
+                                  await user.updateEmail(_emailController.text);
+                                  await user.reload();
+
+                                  await saveUserData(
+                                      user.uid,
+                                      _nameController.text,
+                                      _emailController.text,
+                                      phoneWithCode);
+
+                                  Navigator.pop(context, {
+                                    'name': _nameController.text,
+                                    'phone': phoneWithCode,
+                                    'email': _emailController.text,
+                                  });
+                                } catch (e) {
+                                  showDialog(
+                                    context: context,
+                                    builder: (context) => AlertDialog(
+                                      title: const Text("Error"),
+                                      content: Text(e.toString()),
+                                      actions: [
+                                        TextButton(
+                                          onPressed: () =>
+                                              Navigator.pop(context),
+                                          child: const Text("OK"),
+                                        ),
+                                      ],
+                                    ),
+                                  );
+                                }
+                              }
+                            }
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: const Color(0xFF0288D1),
+                            foregroundColor: Colors.white,
+                            padding: const EdgeInsets.symmetric(
+                                vertical: 15, horizontal: 30),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                          ),
+                          child: const Text('Save Changes'),
+                        ),
+                      ),
+                    ],
                   ),
-                  child: const Text('Save Changes'),
                 ),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
@@ -346,105 +611,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
   void dispose() {
     _nameController.dispose();
     _emailController.dispose();
+    _phoneController.dispose();
     super.dispose();
-  }
-}
-
-// Halaman Setting
-class SettingsPage extends StatelessWidget {
-  const SettingsPage({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Settings'),
-        centerTitle: true,
-        backgroundColor: const Color.fromARGB(215, 24, 157, 239),
-        elevation: 0,
-        iconTheme: const IconThemeData(color: Colors.black),
-      ),
-      body: ListView(
-        padding: const EdgeInsets.all(16.0),
-        children: [
-          ListTile(
-            leading: const Icon(Icons.notifications, color: Colors.blue),
-            title: const Text('Notifications'),
-            trailing: Switch(
-              value: true,
-              onChanged: (value) {},
-            ),
-          ),
-          ListTile(
-            leading: const Icon(Icons.lock, color: Colors.blue),
-            title: const Text('Privacy & Security'),
-            onTap: () {},
-          ),
-          ListTile(
-            leading: const Icon(Icons.language, color: Colors.blue),
-            title: const Text('Language'),
-            onTap: () {},
-          ),
-          ListTile(
-            leading: const Icon(Icons.update, color: Colors.blue),
-            title: const Text('App Updates'),
-            onTap: () {},
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-// Halaman Customer Service
-class CustomerServicePage extends StatelessWidget {
-  const CustomerServicePage({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Customer Service'),
-        centerTitle: true,
-        backgroundColor: const Color.fromARGB(215, 24, 157, 239),
-        elevation: 0,
-        iconTheme: const IconThemeData(color: Colors.black),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Text(
-              'Need Help?',
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 10),
-            const Text(
-              'Contact us anytime, and we’ll be happy to assist you:',
-              style: TextStyle(fontSize: 16),
-            ),
-            const SizedBox(height: 20),
-            ListTile(
-              leading: const Icon(Icons.email, color: Colors.blue),
-              title: const Text('Email Support'),
-              subtitle: const Text('TravoySupport@gmail.com'),
-              onTap: () {},
-            ),
-            ListTile(
-              leading: const Icon(Icons.phone, color: Colors.blue),
-              title: const Text('Call Support'),
-              subtitle: const Text('+62-523-555-088'),
-              onTap: () {},
-            ),
-            ListTile(
-              leading: const Icon(Icons.chat, color: Colors.blue),
-              title: const Text('Live Chat'),
-              onTap: () {},
-            ),
-          ],
-        ),
-      ),
-    );
   }
 }
