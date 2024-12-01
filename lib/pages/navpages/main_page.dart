@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:tugasuas/pages/navpages/bar_item_page.dart';
+import 'package:tugasuas/pages/navpages/top_rated_page.dart';
 import 'package:tugasuas/pages/navpages/home_page.dart';
 import 'package:tugasuas/pages/navpages/my_page.dart';
 import 'package:tugasuas/pages/navpages/search_page.dart';
@@ -14,7 +14,7 @@ class MainPage extends StatefulWidget {
 class _MainPageState extends State<MainPage> {
   List pages = [
     HomePage(),
-    BarItemPage(),
+    TopRatedPage(),
     SearchPage(),
     MyPage(),
   ];
@@ -45,7 +45,7 @@ class _MainPageState extends State<MainPage> {
         items: [
           BottomNavigationBarItem(label: "Home", icon: Icon(Icons.apps)),
           BottomNavigationBarItem(
-              label: "Bar", icon: Icon(Icons.bar_chart_sharp)),
+              label: "Rate", icon: Icon(Icons.bar_chart_sharp)),
           BottomNavigationBarItem(label: "Search", icon: Icon(Icons.search)),
           BottomNavigationBarItem(label: "My", icon: Icon(Icons.person)),
         ],
