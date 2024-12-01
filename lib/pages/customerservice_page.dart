@@ -1,8 +1,38 @@
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:tugasuas/auth/auth_gate.dart';
 
-// Halaman Customer Service
-class CustomerServicePage extends StatelessWidget {
+class CustomerServicePage extends StatefulWidget {
   const CustomerServicePage({super.key});
+
+  @override
+  _CustomerServicePageState createState() => _CustomerServicePageState();
+}
+
+class _CustomerServicePageState extends State<CustomerServicePage> {
+  String userName = '';
+
+  Future<void> fetchUserData() async {
+    final User? user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      setState(() {
+        userName = user.displayName ?? "Name not set";
+      });
+    } else {
+      Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(builder: (context) => const AuthGate()),
+        (route) => false,
+      );
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    fetchUserData();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -33,7 +63,7 @@ class CustomerServicePage extends StatelessWidget {
                     ),
                     children: [
                       TextSpan(
-                        text: 'Brandon Alexander Jayadi,',
+                        text: userName,
                         style: const TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.bold,
@@ -54,7 +84,6 @@ class CustomerServicePage extends StatelessWidget {
                       color: Colors.black),
                 ),
               ),
-              const SizedBox(height: 20),
               Container(
                 decoration: BoxDecoration(
                   color: Colors.white,
