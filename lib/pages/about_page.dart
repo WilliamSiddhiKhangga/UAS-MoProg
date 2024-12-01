@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class AboutUsPage extends StatelessWidget {
-  const AboutUsPage({Key? key}) : super(key: key);
+  const AboutUsPage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -12,6 +12,7 @@ class AboutUsPage extends StatelessWidget {
         backgroundColor: const Color(0xFF189DEF),
         elevation: 0,
       ),
+      backgroundColor: Color.fromARGB(255, 233, 245, 255),
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
@@ -103,16 +104,74 @@ class AboutUsPage extends StatelessWidget {
           ),
 
           const SizedBox(height: 20),
-
-          // Section: Contact Us
-          const Text(
-            'Contact Us',
-            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-          ),
-          const SizedBox(height: 8),
-          const Text(
-            'Have questions or need assistance? Reach out to us anytime at TravoySupport@gmail.com or call 555-352-388 TRAVOY.',
-            style: TextStyle(fontSize: 16),
+          Container(
+            decoration: BoxDecoration(
+              color: const Color.fromARGB(255, 24, 157, 239),
+              borderRadius: BorderRadius.circular(10),
+            ),
+            padding: const EdgeInsets.all(8.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text(
+                  'Contact Us',
+                  style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w500,
+                      color: Colors.white),
+                ),
+                const SizedBox(height: 10),
+                ListTile(
+                  leading: const Icon(Icons.chat, color: Colors.white),
+                  title: const Text(
+                    'Chat with us',
+                    style: TextStyle(color: Colors.white),
+                  ),
+                  subtitle: const Text(
+                    'Instant help, at your convenience',
+                    style: TextStyle(color: Colors.white70),
+                  ),
+                  trailing: ElevatedButton(
+                    onPressed: () {},
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.white,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                    ),
+                    child: const Text(
+                      'Chat now',
+                      style: TextStyle(color: Colors.blue),
+                    ),
+                  ),
+                ),
+                const Divider(color: Colors.white),
+                ListTile(
+                  leading: const Icon(Icons.email, color: Colors.white),
+                  title: const Text(
+                    'Email us',
+                    style: TextStyle(color: Colors.white),
+                  ),
+                  subtitle: const Text(
+                    'TravoySupport@gmail.com',
+                    style: TextStyle(color: Colors.white70),
+                  ),
+                  trailing: ElevatedButton(
+                    onPressed: () {},
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.white,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                    ),
+                    child: const Text(
+                      'Copy email',
+                      style: TextStyle(color: Colors.blue),
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
         ],
       ),

@@ -6,13 +6,15 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:tugasuas/pages/customerservice_page.dart';
 import 'package:tugasuas/pages/settings_page.dart';
 import 'package:tugasuas/pages/about_page.dart';
+import 'package:tugasuas/pages/history_page.dart';
 // import 'package:tugasuas/pages/welcome_page.dart';
 // import 'package:tugasuas/pages/navpages/main_page.dart';
 
 class MyPage extends StatefulWidget {
-  const MyPage({Key? key}) : super(key: key);
+  const MyPage({super.key});
 
   @override
+  // ignore: library_private_types_in_public_api
   _MyPageState createState() => _MyPageState();
 }
 
@@ -93,6 +95,7 @@ class _MyPageState extends State<MyPage> {
     await auth.signOut();
     // Redirect to Login_Page after logout
     Navigator.pushAndRemoveUntil(
+      // ignore: use_build_context_synchronously
       context,
       MaterialPageRoute(builder: (context) => const AuthGate()),
       (route) => false,
@@ -262,7 +265,14 @@ class _MyPageState extends State<MyPage> {
                 context,
                 icon: Icons.rate_review,
                 title: 'History',
-                onTap: () {},
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const HistoryPage(),
+                    ),
+                  );
+                },
               ),
               _buildMenuItem(
                 context,
@@ -328,11 +338,11 @@ class EditProfilePage extends StatefulWidget {
   final String currentPhone;
 
   const EditProfilePage({
-    Key? key,
+    super.key,
     required this.currentName,
     required this.currentEmail,
     required this.currentPhone,
-  }) : super(key: key);
+  });
 
   @override
   // ignore: library_private_types_in_public_api
@@ -387,7 +397,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
             const CircleAvatar(
               radius: 50,
               backgroundColor: Color.fromARGB(255, 207, 218, 223),
-              child: const Icon(
+              child: Icon(
                 Icons.person,
                 size: 50,
                 color: Colors.white,
@@ -399,7 +409,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
               style: TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.w600,
-                color: Colors.grey.shade700,
+                color: const Color.fromARGB(255, 0, 0, 0),
               ),
             ),
             const SizedBox(height: 30),
@@ -551,6 +561,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
 
                                   await user
                                       .updateDisplayName(_nameController.text);
+                                  // ignore: deprecated_member_use
                                   await user.updateEmail(_emailController.text);
                                   await user.reload();
 
@@ -560,6 +571,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                                       _emailController.text,
                                       phoneWithCode);
 
+                                  // ignore: use_build_context_synchronously
                                   Navigator.pop(context, {
                                     'name': _nameController.text,
                                     'phone': phoneWithCode,
@@ -567,6 +579,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                                   });
                                 } catch (e) {
                                   showDialog(
+                                    // ignore: use_build_context_synchronously
                                     context: context,
                                     builder: (context) => AlertDialog(
                                       title: const Text("Error"),
