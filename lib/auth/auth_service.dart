@@ -1,8 +1,10 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class AuthService {
   final FirebaseAuth auth = FirebaseAuth.instance;
+  final FirebaseFirestore firestore = FirebaseFirestore.instance;
 
   // sign in
   Future<UserCredential> signInWithEmailAndPassword(
@@ -32,6 +34,24 @@ class AuthService {
   // sign out
   Future<void> signOut() async {
     return await auth.signOut();
+  }
+
+  // Function to make a new user account in cloud firestore
+  Future<void> createUserInFirestore(User user) async {
+    try {
+      final userDoc = firestore.collection('Users').doc(user.uid);
+
+      if ((await userDoc.get()).exists == false) {
+        await userDoc.set({
+          'Name': user.displayName ?? 'User Name',
+          'Email': user.email ?? '',
+          'Phone': '',
+          'CreatedAt': FieldValue.serverTimestamp(),
+        });
+      }
+    } catch (e) {
+      throw Exception('Failed to create user in Firestore: $e');
+    }
   }
 
   // Google Sign in
