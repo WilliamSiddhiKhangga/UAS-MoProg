@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:tugasuas/auth/auth_service.dart';
-import 'package:tugasuas/pages/welcome_page.dart';
-import 'package:tugasuas/pages/navpages/main_page.dart';
 
 class MyPage extends StatefulWidget {
-  const MyPage({Key? key}) : super(key: key);
+  const MyPage({super.key});
 
   @override
   _MyPageState createState() => _MyPageState();
@@ -232,10 +230,10 @@ class EditProfilePage extends StatefulWidget {
   final String currentEmail;
 
   const EditProfilePage({
-    Key? key,
+    super.key,
     required this.currentName,
     required this.currentEmail,
-  }) : super(key: key);
+  });
 
   @override
   _EditProfilePageState createState() => _EditProfilePageState();
@@ -354,7 +352,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
 
 // Halaman Setting
 class SettingsPage extends StatelessWidget {
-  const SettingsPage({Key? key}) : super(key: key);
+  const SettingsPage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -400,7 +398,7 @@ class SettingsPage extends StatelessWidget {
 
 // Halaman Customer Service
 class CustomerServicePage extends StatelessWidget {
-  const CustomerServicePage({Key? key}) : super(key: key);
+  const CustomerServicePage({super.key});
 
   @override
   Widget build(BuildContext context) {
