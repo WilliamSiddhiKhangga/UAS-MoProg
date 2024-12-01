@@ -4,6 +4,7 @@ import 'package:tugasuas/auth/auth_service.dart';
 import 'package:flutter/gestures.dart';
 import 'package:tugasuas/pages/forgot_password_page.dart';
 import 'package:tugasuas/pages/register_page.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class Login extends StatelessWidget {
   final TextEditingController _emailController = TextEditingController();
@@ -29,7 +30,13 @@ class Login extends StatelessWidget {
       await auth.signInWithEmailAndPassword(
           _emailController.text, _passwordController.text);
 
+      final user = FirebaseAuth.instance.currentUser;
+
       Navigator.of(context).pop();
+
+      if (user != null) {
+        await auth.createUserInFirestore(user);
+      }
     } catch (e) {
       showDialog(
         context: context,
