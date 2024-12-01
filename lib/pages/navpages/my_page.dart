@@ -1,7 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:tugasuas/auth/auth_gate.dart';
 import 'package:tugasuas/auth/auth_service.dart';
-import 'package:tugasuas/pages/welcome_page.dart';
-import 'package:tugasuas/pages/navpages/main_page.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:tugasuas/pages/customerservice_page.dart';
+import 'package:tugasuas/pages/setting_page.dart';
+// import 'package:tugasuas/pages/welcome_page.dart';
+// import 'package:tugasuas/pages/navpages/main_page.dart';
 
 class MyPage extends StatefulWidget {
   const MyPage({Key? key}) : super(key: key);
@@ -11,12 +16,75 @@ class MyPage extends StatefulWidget {
 }
 
 class _MyPageState extends State<MyPage> {
-  String userName = 'Brandon Alexander Jayadi';
-  String userEmail = 'test@gmail.com';
+  String userName = '';
+  String userEmail = '';
+  String userPhone = '';
 
-  void logOut(BuildContext context) async {
+  // Fetch the data from database
+  Future<void> fetchUserData() async {
+    final User? user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      setState(() {
+        userName = user.displayName ?? "Name not set";
+        userEmail = user.email ?? "Email not set";
+      });
+    } else {
+      Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(builder: (context) => const AuthGate()),
+        (route) => false,
+      );
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    fetchUserData();
+  }
+
+  // Confirmation for logout
+  void _showLogoutDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Confirm Logout'),
+          content: const Text('Are you sure you want to log out?'),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text('Cancel'),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.pop(context);
+                _logOut(context);
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.red,
+              ),
+              child: const Text('Logout',
+                  style: TextStyle(
+                    color: Colors.white,
+                  )),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  // For Logout authentication
+  void _logOut(BuildContext context) async {
     final auth = AuthService();
     await auth.signOut();
+    // Redirect to Login_Page after logout
+    Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute(builder: (context) => const AuthGate()),
+      (route) => false,
+    );
   }
 
   @override
@@ -52,6 +120,7 @@ class _MyPageState extends State<MyPage> {
                                     color: Colors.black.withOpacity(0.8),
                                   ),
                                 ),
+                                // Default Profile Photo (Icon)
                                 Center(
                                   child: CircleAvatar(
                                     radius: 150,
@@ -200,7 +269,7 @@ class _MyPageState extends State<MyPage> {
                 icon: Icons.logout,
                 title: 'Logout',
                 textColor: Colors.red,
-                onTap: () => logOut(context),
+                onTap: () => _showLogoutDialog(context),
               ),
             ],
           ),
@@ -238,6 +307,7 @@ class EditProfilePage extends StatefulWidget {
   }) : super(key: key);
 
   @override
+  // ignore: library_private_types_in_public_api
   _EditProfilePageState createState() => _EditProfilePageState();
 }
 
@@ -245,6 +315,16 @@ class _EditProfilePageState extends State<EditProfilePage> {
   final _formKey = GlobalKey<FormState>();
   late TextEditingController _nameController;
   late TextEditingController _emailController;
+
+  Future<void> saveUserData(String uid, String name, String email) async {
+    final usersCollection = FirebaseFirestore.instance.collection('Users');
+
+    await usersCollection.doc(uid).set({
+      'Name': name,
+      'Email': email,
+      'lastUpdated': DateTime.now(),
+    }, SetOptions(merge: true));
+  }
 
   @override
   void initState() {
@@ -317,12 +397,40 @@ class _EditProfilePageState extends State<EditProfilePage> {
               const SizedBox(height: 30),
               Center(
                 child: ElevatedButton(
-                  onPressed: () {
+                  onPressed: () async {
+                    // Updating the database
                     if (_formKey.currentState!.validate()) {
-                      Navigator.pop(context, {
-                        'name': _nameController.text,
-                        'email': _emailController.text,
-                      });
+                      final user = FirebaseAuth.instance.currentUser;
+
+                      if (user != null) {
+                        try {
+                          await user.updateDisplayName(_nameController.text);
+                          await user.updateEmail(_emailController.text);
+                          await user.reload();
+
+                          await saveUserData(user.uid, _nameController.text,
+                              _emailController.text);
+
+                          Navigator.pop(context, {
+                            'name': _nameController.text,
+                            'email': _emailController.text,
+                          });
+                        } catch (e) {
+                          showDialog(
+                            context: context,
+                            builder: (context) => AlertDialog(
+                              title: const Text("Error"),
+                              content: Text(e.toString()),
+                              actions: [
+                                TextButton(
+                                  onPressed: () => Navigator.pop(context),
+                                  child: const Text("OK"),
+                                ),
+                              ],
+                            ),
+                          );
+                        }
+                      }
                     }
                   },
                   style: ElevatedButton.styleFrom(
@@ -349,104 +457,5 @@ class _EditProfilePageState extends State<EditProfilePage> {
     _nameController.dispose();
     _emailController.dispose();
     super.dispose();
-  }
-}
-
-// Halaman Setting
-class SettingsPage extends StatelessWidget {
-  const SettingsPage({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Settings'),
-        centerTitle: true,
-        backgroundColor: const Color.fromARGB(215, 24, 157, 239),
-        elevation: 0,
-        iconTheme: const IconThemeData(color: Colors.black),
-      ),
-      body: ListView(
-        padding: const EdgeInsets.all(16.0),
-        children: [
-          ListTile(
-            leading: const Icon(Icons.notifications, color: Colors.blue),
-            title: const Text('Notifications'),
-            trailing: Switch(
-              value: true,
-              onChanged: (value) {},
-            ),
-          ),
-          ListTile(
-            leading: const Icon(Icons.lock, color: Colors.blue),
-            title: const Text('Privacy & Security'),
-            onTap: () {},
-          ),
-          ListTile(
-            leading: const Icon(Icons.language, color: Colors.blue),
-            title: const Text('Language'),
-            onTap: () {},
-          ),
-          ListTile(
-            leading: const Icon(Icons.update, color: Colors.blue),
-            title: const Text('App Updates'),
-            onTap: () {},
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-// Halaman Customer Service
-class CustomerServicePage extends StatelessWidget {
-  const CustomerServicePage({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Customer Service'),
-        centerTitle: true,
-        backgroundColor: const Color.fromARGB(215, 24, 157, 239),
-        elevation: 0,
-        iconTheme: const IconThemeData(color: Colors.black),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Text(
-              'Need Help?',
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 10),
-            const Text(
-              'Contact us anytime, and we’ll be happy to assist you:',
-              style: TextStyle(fontSize: 16),
-            ),
-            const SizedBox(height: 20),
-            ListTile(
-              leading: const Icon(Icons.email, color: Colors.blue),
-              title: const Text('Email Support'),
-              subtitle: const Text('TravoySupport@gmail.com'),
-              onTap: () {},
-            ),
-            ListTile(
-              leading: const Icon(Icons.phone, color: Colors.blue),
-              title: const Text('Call Support'),
-              subtitle: const Text('+62-523-555-088'),
-              onTap: () {},
-            ),
-            ListTile(
-              leading: const Icon(Icons.chat, color: Colors.blue),
-              title: const Text('Live Chat'),
-              onTap: () {},
-            ),
-          ],
-        ),
-      ),
-    );
   }
 }
