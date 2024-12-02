@@ -154,6 +154,7 @@ class _MyPageState extends State<MyPage> {
       appBar: AppBar(
         title: const Text('Profile'),
         centerTitle: true,
+        automaticallyImplyLeading: false,
         backgroundColor: const Color.fromARGB(215, 24, 157, 239),
         elevation: 0,
         iconTheme: const IconThemeData(color: Colors.black),
