@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:tugasuas/widgets/app_large_text.dart';
 
@@ -12,7 +11,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
-    TabController _tabController = TabController(length: 2, vsync: this);
+    TabController tabController = TabController(length: 2, vsync: this);
     return Scaffold(
       body: Stack(
         children: [
@@ -137,7 +136,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                   alignment: Alignment.center,
                   child: TabBar(
                     labelPadding: const EdgeInsets.only(left: 20, right: 80),
-                    controller: _tabController,
+                    controller: tabController,
                     labelColor: Colors.lightBlue,
                     unselectedLabelColor: Colors.grey,
                     isScrollable: true,
@@ -178,7 +177,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                           "USA",
                           "France",
                         ];
-
                         final List<String> prices = [
                           "Rp10,250,000",
                           "Rp16,500,000",

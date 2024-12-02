@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:tugasuas/auth/auth_service.dart';
 import 'package:tugasuas/pages/login_page.dart';
 import 'package:tugasuas/pages/navpages/main_page.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class RegisterPage extends StatelessWidget {
   final TextEditingController _emailController = TextEditingController();
@@ -34,6 +35,12 @@ class RegisterPage extends StatelessWidget {
             _emailController.text, _passwordController.text);
 
         Navigator.of(context).pop();
+
+        final user = FirebaseAuth.instance.currentUser;
+
+        if (user != null) {
+          await auth.createUserInFirestore(user);
+        }
 
         // navigasi ke halaman utama jika berhasil register
         Navigator.pushReplacement(
