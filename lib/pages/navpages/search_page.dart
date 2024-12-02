@@ -8,8 +8,8 @@ class SearchPage extends StatefulWidget {
 }
 
 class _SearchPageState extends State<SearchPage> {
-  final TextEditingController _searchController = TextEditingController();
   final List<String> _pastSearches = [];
+  final TextEditingController _searchController = TextEditingController();
 
   void _addSearchQuery(String query) {
     if (query.isNotEmpty) {
@@ -34,7 +34,7 @@ class _SearchPageState extends State<SearchPage> {
         title: const Text("Search"),
         centerTitle: true,
         automaticallyImplyLeading: false,
-        backgroundColor: const Color.fromARGB(215, 24, 157, 239)
+        backgroundColor: const Color.fromARGB(215, 24, 157, 239),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
