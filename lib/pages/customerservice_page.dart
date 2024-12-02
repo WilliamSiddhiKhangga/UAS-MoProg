@@ -7,6 +7,7 @@ class CustomerServicePage extends StatefulWidget {
   const CustomerServicePage({super.key});
 
   @override
+  // ignore: library_private_types_in_public_api
   _CustomerServicePageState createState() => _CustomerServicePageState();
 }
 
@@ -231,7 +232,7 @@ class _CustomerServicePageState extends State<CustomerServicePage> {
                   color: const Color.fromARGB(255, 24, 157, 239),
                   borderRadius: BorderRadius.circular(10),
                 ),
-                padding: const EdgeInsets.all(16.0),
+                padding: const EdgeInsets.all(8.0),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
