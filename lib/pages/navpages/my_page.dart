@@ -437,7 +437,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
         title:
             const Text('Edit Profile', style: TextStyle(color: Colors.white)),
         centerTitle: true,
-        backgroundColor: const Color(0xFF0288D1), // Biru muda khas
+        backgroundColor: const Color(0xFF0288D1),
         elevation: 0,
         iconTheme: const IconThemeData(color: Colors.white),
       ),
