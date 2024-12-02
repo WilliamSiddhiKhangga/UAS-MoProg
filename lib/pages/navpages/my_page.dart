@@ -7,8 +7,6 @@ import 'package:tugasuas/pages/customerservice_page.dart';
 import 'package:tugasuas/pages/settings_page.dart';
 import 'package:tugasuas/pages/about_page.dart';
 import 'package:tugasuas/pages/history_page.dart';
-// import 'package:tugasuas/pages/welcome_page.dart';
-// import 'package:tugasuas/pages/navpages/main_page.dart';
 
 class MyPage extends StatefulWidget {
   const MyPage({super.key});

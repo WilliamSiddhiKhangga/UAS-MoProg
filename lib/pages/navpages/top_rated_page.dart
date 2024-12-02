@@ -37,6 +37,8 @@ class _TopRatedPageState extends State<TopRatedPage> {
 
   bool showTopPicksOnly = false;
   bool showFavoritesOnly = false;
+  bool likeButtonActive = false;
+  bool dislikeButtonActive = false;
   String sortBy = "Most Likes";
 
   List<Map<String, dynamic>> getFilteredAndSortedDestinations() {
@@ -81,9 +83,6 @@ class _TopRatedPageState extends State<TopRatedPage> {
     final likePercentage = (destination["likes"] / totalVotes) * 100;
     final dislikePercentage = (destination["dislikes"] / totalVotes) * 100;
     final neutralPercentage = (destination["neutral"] / totalVotes) * 100;
-
-    bool likeButtonActive = false;
-    bool dislikeButtonActive = false;
 
     showModalBottomSheet(   
       context: context,
