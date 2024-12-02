@@ -6,9 +6,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:tugasuas/pages/customerservice_page.dart';
 import 'package:tugasuas/pages/settings_page.dart';
 import 'package:tugasuas/pages/about_page.dart';
-import 'package:tugasuas/pages/history_page.dart';
-// import 'package:tugasuas/pages/welcome_page.dart';
-// import 'package:tugasuas/pages/navpages/main_page.dart';
 
 class MyPage extends StatefulWidget {
   const MyPage({Key? key}) : super(key: key);
@@ -156,6 +153,7 @@ class _MyPageState extends State<MyPage> {
       appBar: AppBar(
         title: const Text('Profile'),
         centerTitle: true,
+        automaticallyImplyLeading: false,
         backgroundColor: const Color.fromARGB(215, 24, 157, 239),
         elevation: 0,
         iconTheme: const IconThemeData(color: Colors.black),
@@ -313,30 +311,19 @@ class _MyPageState extends State<MyPage> {
                 context,
                 icon: Icons.rate_review,
                 title: 'History',
-                onTap: () {
-                  _checkProfileCompletion(context, () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const HistoryPage(),
-                      ),
-                    );
-                  });
-                },
+                onTap: () {},
               ),
               _buildMenuItem(
                 context,
                 icon: Icons.help_outline,
                 title: 'Customer Service',
                 onTap: () {
-                  _checkProfileCompletion(context, () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const CustomerServicePage(),
-                      ),
-                    );
-                  });
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const CustomerServicePage(),
+                    ),
+                  );
                 },
               ),
               _buildMenuItem(
@@ -394,7 +381,7 @@ class EditProfilePage extends StatefulWidget {
     required this.currentName,
     required this.currentEmail,
     required this.currentPhone,
-  });
+  }) : super(key: key);
 
   @override
   // ignore: library_private_types_in_public_api
@@ -449,7 +436,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
             const CircleAvatar(
               radius: 50,
               backgroundColor: Color.fromARGB(255, 207, 218, 223),
-              child: Icon(
+              child: const Icon(
                 Icons.person,
                 size: 50,
                 color: Colors.white,
@@ -461,7 +448,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
               style: TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.w600,
-                color: const Color.fromARGB(255, 0, 0, 0),
+                color: Colors.grey.shade700,
               ),
             ),
             const SizedBox(height: 30),
@@ -613,7 +600,6 @@ class _EditProfilePageState extends State<EditProfilePage> {
 
                                   await user
                                       .updateDisplayName(_nameController.text);
-                                  // ignore: deprecated_member_use
                                   await user.updateEmail(_emailController.text);
                                   await user.reload();
 
@@ -623,7 +609,6 @@ class _EditProfilePageState extends State<EditProfilePage> {
                                       _emailController.text,
                                       phoneWithCode);
 
-                                  // ignore: use_build_context_synchronously
                                   Navigator.pop(context, {
                                     'name': _nameController.text,
                                     'phone': phoneWithCode,
@@ -631,7 +616,6 @@ class _EditProfilePageState extends State<EditProfilePage> {
                                   });
                                 } catch (e) {
                                   showDialog(
-                                    // ignore: use_build_context_synchronously
                                     context: context,
                                     builder: (context) => AlertDialog(
                                       title: const Text("Error"),
