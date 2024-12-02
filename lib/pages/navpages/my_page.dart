@@ -57,6 +57,54 @@ class _MyPageState extends State<MyPage> {
     fetchUserData();
   }
 
+  // Check if user not fill the name and phone number
+  // then user will directed to edit profile
+  void _checkProfileCompletion(BuildContext context, VoidCallback onSuccess) {
+    if (userName.isEmpty ||
+        userPhone.isEmpty ||
+        userName == 'Name not set' ||
+        userPhone == 'Phone not set') {
+      showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: const Text('Incomplete Profile'),
+            content: const Text(
+                'Please complete your profile (Name and Phone) before accessing this feature.'),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: const Text('Cancel'),
+              ),
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => EditProfilePage(
+                        currentName: userName,
+                        currentEmail: userEmail,
+                        currentPhone: userPhone,
+                      ),
+                    ),
+                  );
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.yellow,
+                  foregroundColor: Colors.black,
+                ),
+                child: const Text('Edit Profile'),
+              ),
+            ],
+          );
+        },
+      );
+    } else {
+      onSuccess();
+    }
+  }
+
   // Confirmation for logout
   void _showLogoutDialog(BuildContext context) {
     showDialog(
@@ -266,12 +314,14 @@ class _MyPageState extends State<MyPage> {
                 icon: Icons.rate_review,
                 title: 'History',
                 onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const HistoryPage(),
-                    ),
-                  );
+                  _checkProfileCompletion(context, () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const HistoryPage(),
+                      ),
+                    );
+                  });
                 },
               ),
               _buildMenuItem(
@@ -279,12 +329,14 @@ class _MyPageState extends State<MyPage> {
                 icon: Icons.help_outline,
                 title: 'Customer Service',
                 onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const CustomerServicePage(),
-                    ),
-                  );
+                  _checkProfileCompletion(context, () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const CustomerServicePage(),
+                      ),
+                    );
+                  });
                 },
               ),
               _buildMenuItem(
