@@ -10,7 +10,7 @@ import 'package:tugasuas/pages/about_page.dart';
 // import 'package:tugasuas/pages/navpages/main_page.dart';
 
 class MyPage extends StatefulWidget {
-  const MyPage({super.key});
+  const MyPage({Key? key}) : super(key: key);
 
   @override
   _MyPageState createState() => _MyPageState();
@@ -328,7 +328,7 @@ class EditProfilePage extends StatefulWidget {
   final String currentPhone;
 
   const EditProfilePage({
-    super.key,
+    Key? key,
     required this.currentName,
     required this.currentEmail,
     required this.currentPhone,

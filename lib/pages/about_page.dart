@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class AboutUsPage extends StatelessWidget {
-  const AboutUsPage({Key? key}) : super(key: key);
+  const AboutUsPage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -9,7 +9,7 @@ class AboutUsPage extends StatelessWidget {
       appBar: AppBar(
         title: const Text('About Us'),
         centerTitle: true,
-        backgroundColor: const Color(0xFF189DEF),
+        backgroundColor: const Color.fromARGB(215, 24, 157, 239),
         elevation: 0,
       ),
       body: ListView(
@@ -19,7 +19,7 @@ class AboutUsPage extends StatelessWidget {
           Container(
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
-              color: const Color(0xFF189DEF),
+              color: const Color.fromARGB(215, 24, 157, 239),
               borderRadius: BorderRadius.circular(10),
             ),
             child: Column(
