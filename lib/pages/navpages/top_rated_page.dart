@@ -16,6 +16,8 @@ class _TopRatedPageState extends State<TopRatedPage> {
       "dislikes": 15,
       "neutral": 5,
       "isFavorite": false,
+      "isLiked": false,
+      "isDisliked": false,
     },
     {
       "image": "paris.png",
@@ -24,6 +26,8 @@ class _TopRatedPageState extends State<TopRatedPage> {
       "dislikes": 130,
       "neutral": 80,
       "isFavorite": false,
+      "isLiked": false,
+      "isDisliked": false,
     },
     {
       "image": "liberty.png",
@@ -32,6 +36,8 @@ class _TopRatedPageState extends State<TopRatedPage> {
       "dislikes": 25,
       "neutral": 10,
       "isFavorite": false,
+      "isLiked": false,
+      "isDisliked": false,
     },
   ];
 
@@ -81,9 +87,6 @@ class _TopRatedPageState extends State<TopRatedPage> {
     final likePercentage = (destination["likes"] / totalVotes) * 100;
     final dislikePercentage = (destination["dislikes"] / totalVotes) * 100;
     final neutralPercentage = (destination["neutral"] / totalVotes) * 100;
-
-    bool likeButtonActive = false;
-    bool dislikeButtonActive = false;
 
     showModalBottomSheet(   
       context: context,
@@ -137,16 +140,16 @@ class _TopRatedPageState extends State<TopRatedPage> {
                                 GestureDetector(
                                   onTap: () {
                                     modalSetState(() {
-                                      if (likeButtonActive) {
+                                      if (destination["isLiked"]) {
                                         destination["likes"]--;
-                                        likeButtonActive = false;
+                                        destination["isLiked"] = false;
                                       } else {
                                         destination["likes"]++;
-                                        likeButtonActive = true;
+                                        destination["isLiked"] = true;
 
-                                        if (dislikeButtonActive) {
+                                        if (destination["isDisliked"]) {
                                           destination["dislikes"]--;
-                                          dislikeButtonActive = false;
+                                          destination["isDisliked"] = false;
                                         }
                                       }
                                     });
@@ -159,7 +162,7 @@ class _TopRatedPageState extends State<TopRatedPage> {
                                         color: const Color.fromARGB(215, 24, 157, 239),
                                         width: 2,
                                       ),
-                                      color: likeButtonActive
+                                      color: destination["isLiked"]
                                           ? const Color.fromARGB(215, 24, 157, 239)
                                           : Colors.transparent,
                                     ),
@@ -175,16 +178,16 @@ class _TopRatedPageState extends State<TopRatedPage> {
                                 GestureDetector(
                                   onTap: () {
                                     modalSetState(() {
-                                      if (dislikeButtonActive) {
+                                      if (destination["isDisliked"]) {
                                         destination["dislikes"]--;
-                                        dislikeButtonActive = false;
+                                        destination["isDisliked"] = false;
                                       } else {
                                         destination["dislikes"]++;
-                                        dislikeButtonActive = true;
+                                        destination["isDisliked"] = true;
 
-                                        if (likeButtonActive) {
+                                        if (destination["isLiked"]) {
                                           destination["likes"]--;
-                                          likeButtonActive = false;
+                                          destination["isLiked"] = false;
                                         }
                                       }
                                     });
@@ -197,7 +200,7 @@ class _TopRatedPageState extends State<TopRatedPage> {
                                         color: const Color.fromARGB(215, 24, 157, 239),
                                         width: 2,
                                       ),
-                                      color: dislikeButtonActive
+                                      color: destination["isDisliked"]
                                           ? const Color.fromARGB(215, 24, 157, 239)
                                           : Colors.transparent,
                                     ),

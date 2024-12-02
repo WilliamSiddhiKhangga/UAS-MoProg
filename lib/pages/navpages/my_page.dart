@@ -7,8 +7,6 @@ import 'package:tugasuas/pages/customerservice_page.dart';
 import 'package:tugasuas/pages/settings_page.dart';
 import 'package:tugasuas/pages/about_page.dart';
 import 'package:tugasuas/pages/history_page.dart';
-// import 'package:tugasuas/pages/welcome_page.dart';
-// import 'package:tugasuas/pages/navpages/main_page.dart';
 
 class MyPage extends StatefulWidget {
   const MyPage({super.key});
@@ -156,6 +154,7 @@ class _MyPageState extends State<MyPage> {
       appBar: AppBar(
         title: const Text('Profile'),
         centerTitle: true,
+        automaticallyImplyLeading: false,
         backgroundColor: const Color.fromARGB(215, 24, 157, 239),
         elevation: 0,
         iconTheme: const IconThemeData(color: Colors.black),
